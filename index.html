@@ -1,0 +1,3579 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI地理教学网 · AI赋能地理教学资源平台</title>
+  <style>
+    :root {
+      --primary: #059669;
+      --primary-dark: #047857;
+      --primary-light: #d1fae5;
+      --secondary: #0d9488;
+      --accent: #f59e0b;
+      --blue: #2563eb;
+      --purple: #7c3aed;
+      --rose: #e11d48;
+      --bg: #f0fdf4;
+      --card: #ffffff;
+      --text: #1a2e1a;
+      --text-muted: #5f7a5f;
+      --border: #d1e7d1;
+      --radius: 14px;
+      --shadow: 0 4px 24px rgba(5,150,105,0.08);
+      --shadow-lg: 0 12px 40px rgba(5,150,105,0.12);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'PingFang SC','Microsoft YaHei','Segoe UI',sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      background: linear-gradient(135deg, #064e3b 0%, #059669 50%, #0d9488 100%);
+      color: white;
+      padding: 0 2rem;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 16px rgba(5,150,105,0.25);
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.2rem;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+    }
+    .logo-icon { font-size: 1.5rem; }
+    nav { display: flex; gap: 4px; }
+    .nav-tab {
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.8);
+      border: none;
+      background: transparent;
+      transition: all 0.2s;
+    }
+    .nav-tab:hover { background: rgba(255,255,255,0.15); color: white; }
+    .nav-tab.active { background: rgba(255,255,255,0.22); color: white; }
+
+    /* ===== LAYOUT ===== */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ===== HERO ===== */
+    .hero {
+      background: linear-gradient(135deg, #064e3b 0%, #059669 40%, #0d9488 100%);
+      border-radius: 20px;
+      padding: 44px 48px;
+      color: white;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      right: -40px; top: -40px;
+      width: 260px; height: 260px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      right: 100px; bottom: -60px;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+    }
+    .hero h1 {
+      font-size: 1.9rem;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+    .hero p {
+      font-size: 1rem;
+      opacity: 0.85;
+      margin-bottom: 28px;
+      max-width: 520px;
+      line-height: 1.6;
+    }
+
+    /* ===== SEARCH BOX (HOME) ===== */
+    .search-hero {
+      display: flex;
+      gap: 10px;
+      max-width: 640px;
+    }
+    .search-hero input {
+      flex: 1;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      color: var(--text);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+    .search-hero input::placeholder { color: #94a3b8; }
+    .search-hero input:focus { outline: 3px solid rgba(255,255,255,0.4); }
+    .btn {
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-green {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 4px 16px rgba(245,158,11,0.3);
+    }
+    .btn-green:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(245,158,11,0.4); }
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+    .btn-blue { background: var(--blue); color: white; }
+    .btn-blue:hover { transform: translateY(-1px); }
+    .btn-sm { padding: 7px 14px; font-size: 0.82rem; }
+    .btn-outline {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1.5px solid var(--border);
+    }
+    .btn-outline:hover { background: var(--primary-light); color: var(--primary-dark); border-color: var(--primary); }
+
+    /* ===== QUICK TAGS ===== */
+    .quick-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+    .quick-tag {
+      padding: 6px 16px;
+      background: rgba(255,255,255,0.18);
+      border-radius: 20px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      color: white;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .quick-tag:hover { background: rgba(255,255,255,0.3); }
+
+    /* ===== STATS ===== */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .stat {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    .stat-icon { font-size: 1.6rem; margin-bottom: 6px; }
+    .stat-num { font-size: 1.6rem; font-weight: 900; color: var(--primary); }
+    .stat-label { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+
+    /* ===== SECTION ===== */
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ===== PLATFORM CARDS ===== */
+    .platform-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .platform-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      border: 2px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+    .platform-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary);
+    }
+    .platform-card-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .platform-logo {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: white;
+      flex-shrink: 0;
+    }
+    .platform-name { font-size: 1rem; font-weight: 800; }
+    .platform-badge {
+      position: absolute;
+      top: 12px; right: 12px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 0.68rem;
+      font-weight: 700;
+    }
+    .badge-free { background: #d1fae5; color: #065f46; }
+    .badge-vip { background: #fef3c7; color: #92400e; }
+    .badge-official { background: #dbeafe; color: #1d4ed8; }
+    .platform-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+    .platform-links { display: flex; flex-wrap: wrap; gap: 6px; }
+    .platform-link {
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      cursor: pointer;
+      transition: all 0.15s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .platform-link:hover { background: var(--primary); color: white; }
+
+    /* ===== SEARCH PAGE ===== */
+    .search-page-box {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .search-row {
+      display: flex;
+      gap: 10px;
+    }
+    .search-row input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.95rem;
+    }
+    .search-row input:focus { outline: none; border-color: var(--primary); }
+    .engine-tabs {
+      display: flex;
+      gap: 6px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+    .engine-tab {
+      padding: 7px 16px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 2px solid var(--border);
+      background: white;
+      color: var(--text-muted);
+      transition: all 0.15s;
+    }
+    .engine-tab:hover { border-color: var(--primary); color: var(--primary); }
+    .engine-tab.active { border-color: var(--primary); background: var(--primary); color: white; }
+
+    .search-results {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      min-height: 200px;
+    }
+    .result-hint {
+      text-align: center;
+      color: var(--text-muted);
+      padding: 40px 20px;
+      font-size: 0.92rem;
+    }
+    .result-hint-icon { font-size: 2.5rem; margin-bottom: 8px; }
+    .search-iframe-wrap {
+      width: 100%;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: white;
+    }
+    .search-iframe-wrap iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+    }
+    .iframe-fallback {
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+    .fallback-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .fallback-link {
+      padding: 12px 24px;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.92rem;
+      transition: all 0.2s;
+    }
+    .fallback-link:hover { background: var(--primary); color: white; }
+
+    /* ===== RESOURCE BROWSER ===== */
+    .category-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .cat-tab {
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      background: white;
+      color: var(--text-muted);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      transition: all 0.2s;
+    }
+    .cat-tab:hover { color: var(--primary); }
+    .cat-tab.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(5,150,105,0.3); }
+
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+    .resource-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: transform 0.2s;
+      cursor: pointer;
+    }
+    .resource-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+    .resource-thumb {
+      height: 140px;
+      background: linear-gradient(135deg, var(--primary-light), #a7f3d0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      position: relative;
+    }
+    .resource-type-badge {
+      position: absolute;
+      top: 10px; left: 10px;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: white;
+    }
+    .type-ppt { background: #dc2626; }
+    .type-doc { background: #2563eb; }
+    .type-video { background: #7c3aed; }
+    .type-plan { background: #059669; }
+    .resource-info { padding: 16px; }
+    .resource-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .resource-meta {
+      display: flex;
+      gap: 10px;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+    .resource-source {
+      display: inline-block;
+      padding: 3px 8px;
+      background: var(--bg);
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .resource-actions { display: flex; gap: 6px; }
+
+    /* ===== RESOURCE DETAIL MODAL ===== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: white;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 640px;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+    .modal-header {
+      padding: 22px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 1;
+      border-radius: 16px 16px 0 0;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.3rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      padding: 4px 6px;
+      border-radius: 6px;
+    }
+    .modal-close:hover { background: #f1f5f9; }
+    .modal-body { padding: 24px; }
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      position: sticky;
+      bottom: 0;
+      background: white;
+      border-radius: 0 0 16px 16px;
+    }
+
+    /* ===== TOAST ===== */
+    .toast-wrap {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+    }
+    .toast {
+      background: #1a2e1a;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      animation: toastIn 0.3s ease;
+      margin-top: 8px;
+    }
+    @keyframes toastIn { from { transform: translateY(16px); opacity: 0; } }
+
+    /* ===== FOOTER ===== */
+    footer {
+      text-align: center;
+      padding: 32px 20px;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      margin-top: 40px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      header { padding: 0 12px; }
+      .nav-tab { padding: 6px 10px; font-size: 0.78rem; }
+      .hero { padding: 28px 20px; }
+      .hero h1 { font-size: 1.4rem; }
+      .search-hero { flex-direction: column; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .container { padding: 16px; }
+      .search-row { flex-direction: column; }
+    }
+
+    /* ===== UPLOAD PAGE ===== */
+    .upload-zone {
+      border: 3px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 48px 24px;
+      text-align: center;
+      background: var(--card);
+      transition: all 0.3s;
+      cursor: pointer;
+      margin-bottom: 24px;
+    }
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+    .upload-icon { font-size: 3rem; margin-bottom: 12px; }
+    .upload-text { font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .upload-hint { font-size: 0.82rem; color: var(--text-muted); }
+
+    .file-list {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .file-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+    .file-item:last-child { border-bottom: none; }
+    .file-item:hover { background: var(--bg); }
+    .file-icon { font-size: 2rem; flex-shrink: 0; }
+    .file-info { flex: 1; min-width: 0; }
+    .file-name { font-weight: 700; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .file-meta { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+    .file-actions { display: flex; gap: 8px; }
+    .file-empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+    .file-empty-icon { font-size: 3rem; margin-bottom: 12px; }
+
+    /* ===== RESOURCES PAGE ===== */
+    .grade-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+    .grade-tab {
+      padding: 10px 22px;
+      border: 2px solid var(--border);
+      border-radius: 25px;
+      background: var(--card);
+      cursor: pointer;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text);
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .grade-tab:hover { border-color: var(--primary); color: var(--primary); }
+    .grade-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+    .resource-chapter {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .chapter-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 20px;
+      background: var(--primary-light);
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--primary-dark);
+      cursor: pointer;
+      user-select: none;
+    }
+    .chapter-arrow { transition: transform 0.3s; font-size: 0.7rem; }
+    .chapter-header.open .chapter-arrow { transform: rotate(90deg); }
+    .chapter-body { display: none; }
+    .chapter-body.open { display: block; }
+
+    .resource-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+    .resource-row:last-child { border-bottom: none; }
+    .resource-row:hover { background: var(--bg); }
+    .resource-name {
+      flex: 1;
+      min-width: 0;
+      font-size: 0.9rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .resource-links { display: flex; gap: 6px; flex-shrink: 0; }
+    .res-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .res-link-kj { background: #dbeafe; color: #1d4ed8; }
+    .res-link-kj:hover { background: #bfdbfe; }
+    .res-link-ja { background: #fce7f3; color: #be185d; }
+    .res-link-ja:hover { background: #fbcfe8; }
+    .res-link-xa { background: #fef3c7; color: #b45309; }
+    .res-link-xa:hover { background: #fde68a; }
+    .res-link-all { background: var(--primary-light); color: var(--primary-dark); padding: 5px 12px; }
+    .res-link-all:hover { background: #a7f3d0; }
+
+    /* ===== AI ASSISTANT ===== */
+    .ai-layout { display: flex; gap: 20px; height: calc(100vh - 200px); min-height: 500px; }
+    .ai-chat-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .ai-chat-header {
+      padding: 14px 20px;
+      background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+      color: white;
+      font-weight: 700;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ai-chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: #fafbfc;
+    }
+    .ai-msg {
+      max-width: 85%;
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-size: 0.88rem;
+      line-height: 1.7;
+      word-break: break-word;
+    }
+    .ai-msg.user {
+      align-self: flex-end;
+      background: var(--primary);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+    .ai-msg.ai {
+      align-self: flex-start;
+      background: white;
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 4px;
+    }
+    .ai-msg.ai h1,.ai-msg.ai h2,.ai-msg.ai h3 { font-size: 0.95rem; margin: 8px 0 4px; }
+    .ai-msg.ai p { margin: 4px 0; }
+    .ai-msg.ai ul,.ai-msg.ai ol { margin: 4px 0; padding-left: 18px; }
+    .ai-msg.ai code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.82rem; }
+    .ai-msg.ai pre { background: #1e293b; color: #e2e8f0; padding: 12px; border-radius: 8px; overflow-x: auto; margin: 8px 0; font-size: 0.8rem; }
+    .ai-msg.ai strong { color: var(--primary-dark); }
+
+    .ai-input-area {
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+    .ai-input {
+      flex: 1;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.88rem;
+      font-family: inherit;
+      resize: none;
+      min-height: 44px;
+      max-height: 120px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .ai-input:focus { border-color: var(--primary); }
+    .ai-send-btn {
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.88rem;
+      white-space: nowrap;
+      transition: opacity 0.2s;
+    }
+    .ai-send-btn:hover { opacity: 0.9; }
+    .ai-send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .ai-quick-actions {
+      display: flex;
+      gap: 8px;
+      padding: 0 16px 10px;
+      flex-wrap: wrap;
+    }
+    .ai-quick-btn {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text);
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .ai-quick-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+    .ai-quick-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+    .ai-sidebar {
+      width: 240px;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      font-size: 0.84rem;
+    }
+    .ai-sidebar h4 { font-size: 0.9rem; font-weight: 700; color: var(--primary-dark); }
+    .ai-settings-group { display: flex; flex-direction: column; gap: 6px; }
+    .ai-settings-group label { font-size: 0.78rem; color: var(--text-muted); font-weight: 600; }
+    .ai-settings-group input, .ai-settings-group select {
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-family: inherit;
+      outline: none;
+    }
+    .ai-settings-group input:focus, .ai-settings-group select:focus { border-color: var(--primary); }
+    .ai-status { font-size: 0.78rem; padding: 6px 10px; border-radius: 8px; text-align: center; }
+    .ai-status.ok { background: var(--primary-light); color: var(--primary-dark); }
+    .ai-status.err { background: #fee2e2; color: #dc2626; }
+    .ai-typing { display: flex; gap: 4px; padding: 12px 16px; }
+    .ai-typing span {
+      width: 7px; height: 7px;
+      background: var(--primary);
+      border-radius: 50%;
+      animation: aiBounce 1.4s infinite ease-in-out both;
+    }
+    .ai-typing span:nth-child(1) { animation-delay: -0.32s; }
+    .ai-typing span:nth-child(2) { animation-delay: -0.16s; }
+    @keyframes aiBounce {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+
+    @media (max-width: 768px) {
+      .ai-layout { flex-direction: column; height: auto; }
+      .ai-sidebar { width: 100%; }
+    }
+
+    /* ===== AI GRADING ===== */
+    .grading-layout {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 20px;
+      min-height: 520px;
+    }
+    .grading-panel {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .grading-panel h4 {
+      font-size: 0.95rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 0;
+    }
+    .grading-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .grading-textarea {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.84rem;
+      font-family: inherit;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+      line-height: 1.6;
+    }
+    .grading-textarea:focus { border-color: var(--primary); }
+    .grading-api-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .grading-api-row input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-family: inherit;
+      outline: none;
+    }
+    .grading-api-row input:focus { border-color: var(--primary); }
+    .grading-btn-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .btn-grade {
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .btn-grade-area { background: #0ea5e9; color: white; }
+    .btn-grade-area:hover { background: #0284c7; }
+    .btn-grade-start { background: var(--primary); color: white; }
+    .btn-grade-start:hover { background: var(--primary-dark); }
+    .btn-grade-start:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-grade-stop { background: var(--rose); color: white; }
+    .btn-grade-stop:hover { background: #be123c; }
+
+    .grading-display {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .grading-display-header {
+      padding: 12px 20px;
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      color: white;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .grading-image-area {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f0fdf4;
+      border-bottom: 1px solid var(--border);
+      min-height: 220px;
+      position: relative;
+      overflow: hidden;
+      cursor: default;
+    }
+    .grading-image-area.dropzone {
+      cursor: pointer;
+    }
+    .grading-image-area img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+    .grading-placeholder {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+    .grading-placeholder-icon { font-size: 2.5rem; margin-bottom: 8px; }
+    .grading-result-area {
+      padding: 16px 20px;
+      font-size: 0.86rem;
+      line-height: 1.8;
+      min-height: 100px;
+      max-height: 200px;
+      overflow-y: auto;
+      background: #fafbfc;
+    }
+    .grading-result-area .score-big {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--primary);
+      text-align: center;
+    }
+    .grading-result-area h4 {
+      font-size: 0.9rem;
+      color: var(--primary-dark);
+      margin: 8px 0 4px;
+    }
+    .grading-result-empty {
+      text-align: center;
+      color: var(--text-muted);
+      padding: 20px;
+      font-size: 0.84rem;
+    }
+
+    /* Crop overlay */
+    .grading-crop-overlay {
+      position: absolute;
+      border: 2px dashed #f59e0b;
+      background: rgba(245,158,11,0.15);
+      pointer-events: none;
+      display: none;
+      z-index: 10;
+    }
+    .grading-crop-overlay.active { display: block; }
+    .grading-crop-hint {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.75);
+      color: white;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      pointer-events: none;
+      display: none;
+      z-index: 11;
+      white-space: nowrap;
+    }
+    .grading-crop-hint.active { display: block; }
+    .grading-status {
+      font-size: 0.78rem;
+      padding: 8px 14px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 600;
+    }
+    .grading-status.idle { background: var(--bg); color: var(--text-muted); }
+    .grading-status.working { background: #fef3c7; color: #b45309; }
+    .grading-status.done { background: var(--primary-light); color: var(--primary-dark); }
+    .grading-status.err { background: #fee2e2; color: #dc2626; }
+
+    /* Thumbnail grid */
+    .grading-thumb-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 8px;
+      padding: 10px;
+      overflow-y: auto;
+      max-height: 260px;
+      width: 100%;
+      align-content: start;
+    }
+    .grading-thumb-item {
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid transparent;
+      aspect-ratio: 1;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      background: #e5e7eb;
+    }
+    .grading-thumb-item:hover { border-color: var(--primary); }
+    .grading-thumb-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .grading-thumb-remove {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 20px;
+      height: 20px;
+      background: rgba(220,38,38,0.88);
+      color: white;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      font-size: 0.7rem;
+      font-weight: 700;
+      display: none;
+      z-index: 5;
+      padding: 0;
+      line-height: 20px;
+      text-align: center;
+    }
+    .grading-thumb-item:hover .grading-thumb-remove { display: block; }
+    .grading-add-bar {
+      display: flex;
+      gap: 8px;
+      padding: 10px 12px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+    .btn-grade-add, .btn-grade-clear {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1.5px solid var(--border);
+      background: white;
+      color: var(--text);
+      transition: all 0.15s;
+    }
+    .btn-grade-add:hover { border-color: var(--primary); color: var(--primary); }
+    .btn-grade-clear:hover { border-color: #dc2626; color: #dc2626; }
+    .grading-img-count {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.75);
+      font-weight: 400;
+      margin-left: 4px;
+    }
+    .grading-progress-wrap {
+      padding: 10px 12px;
+      background: var(--bg);
+    }
+    .grading-progress-text {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .grading-progress-bar {
+      width: 100%;
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .grading-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      border-radius: 3px;
+      transition: width 0.4s;
+    }
+    .grading-result-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.84rem;
+    }
+    .grading-result-item:last-child { border-bottom: none; }
+    .grading-result-item .result-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .grading-result-item .result-score {
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: var(--primary);
+    }
+    .grading-result-item .result-summary {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .grading-summary-bar {
+      padding: 10px 16px;
+      background: linear-gradient(135deg, var(--primary-light), #ecfdf5);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+    .grading-summary-bar span { white-space: nowrap; }
+
+    @media (max-width: 768px) {
+      .grading-layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span class="logo-icon">🌍</span>
+    <span>AI地理教学网</span>
+  </div>
+  <nav>
+    <button class="nav-tab active" onclick="showPage('home')">🏠 首页</button>
+    <button class="nav-tab" onclick="showPage('search')">🔍 资源搜索</button>
+    <button class="nav-tab" onclick="showPage('platforms')">🔗 平台资源</button>
+    <button class="nav-tab" onclick="showPage('browse')">📂 分类浏览</button>
+    <button class="nav-tab" onclick="showPage('upload')">📤 我的上传</button>
+    <button class="nav-tab" onclick="showPage('resources')">📥 精选资源</button>
+    <button class="nav-tab" onclick="showPage('ai')">🤖 AI助手</button>
+    <button class="nav-tab" onclick="showPage('grading')">📝 AI改卷</button>
+  </nav>
+</header>
+
+<div class="container">
+
+  <!-- ===== HOME ===== -->
+  <div id="page-home" class="page active">
+    <div class="hero">
+      <h1>🌏 AI地理教学网</h1>
+      <p>一站式搜索全网地理教学设计、PPT课件、视频资源，深度链接主流教育平台。集成AI智能助手与AI自动阅卷系统，让备课与批改更高效。</p>
+      <div class="search-hero">
+        <input type="text" id="heroSearchInput" placeholder="搜索：日本地理教学设计 PPT" onkeydown="if(event.key==='Enter')heroSearch()">
+        <button class="btn btn-green" onclick="heroSearch()">🔍 搜索资源</button>
+      </div>
+      <div class="quick-tags">
+        <span class="quick-tag" onclick="quickSearch('日本地理教学设计')">日本地理</span>
+        <span class="quick-tag" onclick="quickSearch('中国的气候PPT课件')">中国气候</span>
+        <span class="quick-tag" onclick="quickSearch('世界地理教学设计')">世界地理</span>
+        <span class="quick-tag" onclick="quickSearch('等高线地形图PPT')">等高线地形图</span>
+        <span class="quick-tag" onclick="quickSearch('地球的运动教学设计')">地球运动</span>
+        <span class="quick-tag" onclick="quickSearch('河流与湖泊课件')">河流与湖泊</span>
+        <span class="quick-tag" onclick="quickSearch('人口与民族地理教学')">人口与民族</span>
+        <span class="quick-tag" onclick="quickSearch('东南亚地理PPT')">东南亚</span>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-icon">🔍</div>
+        <div class="stat-num">12+</div>
+        <div class="stat-label">搜索引擎</div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon">🔗</div>
+        <div class="stat-num">30+</div>
+        <div class="stat-label">资源平台</div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon">📚</div>
+        <div class="stat-num">15+</div>
+        <div class="stat-label">学术期刊</div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon">🆓</div>
+        <div class="stat-num">100%</div>
+        <div class="stat-label">免费使用</div>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <div class="section-title">🔗 热门资源平台</div>
+      <button class="btn btn-outline btn-sm" onclick="showPage('platforms')">查看全部 →</button>
+    </div>
+    <div class="platform-grid" id="hotPlatforms"></div>
+  </div>
+
+  <!-- ===== SEARCH PAGE ===== -->
+  <div id="page-search" class="page">
+    <div class="search-page-box">
+      <h2 style="font-size:1.15rem;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px">🔍 聚合资源搜索</h2>
+      <div class="search-row">
+        <input type="text" id="searchInput" placeholder="输入关键词，如：日本地理 PPT 教学设计" onkeydown="if(event.key==='Enter')doSearch()">
+        <button class="btn btn-primary" onclick="doSearch()">🔍 搜索</button>
+      </div>
+      <div class="engine-tabs" id="engineTabs">
+        <div class="engine-tab active" data-engine="quark" onclick="selectEngine(this)">🌟 夸克</div>
+        <div class="engine-tab" data-engine="baidu" onclick="selectEngine(this)">🔎 百度</div>
+        <div class="engine-tab" data-engine="shenma" onclick="selectEngine(this)">📱 神马</div>
+        <div class="engine-tab" data-engine="sogou" onclick="selectEngine(this)">🦊 搜狗</div>
+        <div class="engine-tab" data-engine="so" onclick="selectEngine(this)">🔒 360</div>
+        <div class="engine-tab" data-engine="bing" onclick="selectEngine(this)">🌐 必应</div>
+        <div class="engine-tab" data-engine="toutiao" onclick="selectEngine(this)">📰 头条</div>
+        <div class="engine-tab" data-engine="weixin" onclick="selectEngine(this)">💙 微信</div>
+        <div class="engine-tab" data-engine="douyin" onclick="selectEngine(this)">🎵 抖音</div>
+        <div class="engine-tab" data-engine="bilibili" onclick="selectEngine(this)">📺 B站</div>
+        <div class="engine-tab" data-engine="doubao" onclick="selectEngine(this)">🤖 豆包</div>
+        <div class="engine-tab" data-engine="qianwen" onclick="selectEngine(this)">🧠 通义</div>
+      </div>
+    </div>
+    <div class="search-results" id="searchResults">
+      <div class="result-hint">
+        <div class="result-hint-icon">🔎</div>
+        <div>输入关键词开始搜索，支持夸克、百度、搜狗等12大搜索引擎</div>
+        <div style="margin-top:6px;font-size:0.82rem;color:#94a3b8">默认使用夸克搜索，点击引擎标签可切换 | 下方有12个教学资源平台直达链接</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PLATFORMS PAGE ===== -->
+  <div id="page-platforms" class="page">
+    <div class="section-head" style="margin-bottom:20px">
+      <div class="section-title">🔗 资源平台深度链接</div>
+    </div>
+    <p style="color:var(--text-muted);font-size:0.88rem;margin-bottom:20px">
+      精选国内主流地理教学资源平台，点击即可直达对应资源分类页面，快速找到所需教学设计和课件。
+    </p>
+    <div class="platform-grid" id="allPlatforms"></div>
+  </div>
+
+  <!-- ===== BROWSE PAGE ===== -->
+  <div id="page-browse" class="page">
+    <div class="section-head" style="margin-bottom:20px">
+      <div class="section-title">📂 精选资源分类浏览</div>
+    </div>
+    <div class="category-tabs" id="categoryTabs"></div>
+    <div class="resource-grid" id="resourceGrid"></div>
+  </div>
+
+  <!-- ===== UPLOAD PAGE ===== -->
+  <div id="page-upload" class="page">
+    <div class="section-head" style="margin-bottom:20px">
+      <div class="section-title">📤 我的上传文件</div>
+      <button class="btn btn-outline btn-sm" onclick="exportAllFiles()">💾 导出全部</button>
+    </div>
+    <p style="color:var(--text-muted);font-size:0.88rem;margin-bottom:20px">
+      上传的文件保存在浏览器本地，换浏览器或清除缓存会丢失。请定期导出备份。
+    </p>
+    
+    <!-- 上传区域 -->
+    <div class="upload-zone" id="uploadZone">
+      <div class="upload-icon">📁</div>
+      <div class="upload-text">点击或拖拽文件到此处上传</div>
+      <div class="upload-hint">支持：PDF、Word、Excel、PPT、图片等（单个文件不超过50MB）</div>
+      <input type="file" id="fileInput" multiple style="display:none" accept="*/*">
+    </div>
+
+    <!-- 文件列表 -->
+    <div class="file-list" id="fileList"></div>
+  </div>
+
+  <!-- ===== RESOURCES PAGE ===== -->
+  <div id="page-resources" class="page">
+    <div class="section-head" style="margin-bottom:12px">
+      <div class="section-title">📥 精选教学资源下载</div>
+    </div>
+    <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:18px">
+      资源来源：<a href="https://www.renjiaoshe.com/" target="_blank" style="color:var(--primary);font-weight:600">人教版资源社</a> · 国家中小学智慧教育平台。覆盖初中+高中，所有资源免费直接下载。每课配套 <span style="color:#1d4ed8;font-weight:600">📊课件</span> + <span style="color:#be185d;font-weight:600">📝教案</span> + <span style="color:#b45309;font-weight:600">📋学案</span>。
+    </p>
+
+    <!-- 年级标签 -->
+    <div class="grade-tabs" id="gradeTabs">
+      <button class="grade-tab active" onclick="showGrade('qishang')">📗 七年级上册</button>
+      <button class="grade-tab" onclick="showGrade('qixia')">📘 七年级下册</button>
+      <button class="grade-tab" onclick="showGrade('bashang')">📙 八年级上册</button>
+      <button class="grade-tab" onclick="showGrade('baxia')">📕 八年级下册</button>
+      <span style="margin:0 4px;color:var(--border);align-self:center">│</span>
+      <button class="grade-tab" onclick="showGrade('bixiu1')">📒 高中必修一</button>
+      <button class="grade-tab" onclick="showGrade('bixiu2')">📓 高中必修二</button>
+    </div>
+
+    <div id="gradeContainers">
+      <!-- filled by JS -->
+    </div>
+  </div>
+
+  <!-- ===== AI ASSISTANT PAGE ===== -->
+  <div id="page-ai" class="page">
+    <div class="section-head" style="margin-bottom:16px">
+      <div class="section-title">🤖 AI 教学设计助手</div>
+    </div>
+    <p style="color:var(--text-muted);font-size:0.84rem;margin-bottom:16px">
+      基于大语言模型，帮助地理教师设计、修改、评价教学设计、学案和课件。支持初中 / 高中地理，按提示输入课题即可。
+    </p>
+    <div class="ai-layout">
+      <!-- Chat Area -->
+      <div class="ai-chat-area">
+        <div class="ai-chat-header">🤖 地教AI · 智能教学设计助手</div>
+        <div class="ai-chat-messages" id="aiMessages">
+          <div class="ai-msg ai">
+            👋 你好！我是地理教学AI助手，可以帮你：<br><br>
+            <strong>📚 教案相关</strong><br>
+            📝 <strong>设计教案</strong> — 输入课题，生成完整教学设计<br>
+            ✏️ <strong>修改教案</strong> — 粘贴已有教案，我帮你优化改进<br>
+            📊 <strong>评价教案</strong> — 对教案进行多维度专业评估<br><br>
+            <strong>📋 学案相关</strong><br>
+            📄 <strong>设计学案</strong> — 输入课题，生成学生导学案<br>
+            📎 <strong>修改学案</strong> — 粘贴已有学案，优化改进<br><br>
+            <strong>🎬 课件相关</strong><br>
+            🖥️ <strong>设计课件</strong> — 输入课题，生成PPT课件大纲<br>
+            🎨 <strong>修改课件</strong> — 粘贴已有课件内容，优化设计<br><br>
+            请选择下方功能，或直接输入你的需求。
+          </div>
+        </div>
+        <div class="ai-quick-actions">
+          <button class="ai-quick-btn active" onclick="setAIMode(this, 'design')">📝 设计教案</button>
+          <button class="ai-quick-btn" onclick="setAIMode(this, 'modify')">✏️ 修改教案</button>
+          <button class="ai-quick-btn" onclick="setAIMode(this, 'evaluate')">📊 评价教案</button>
+          <button class="ai-quick-btn" onclick="setAIMode(this, 'design_xuean')">📄 设计学案</button>
+          <button class="ai-quick-btn" onclick="setAIMode(this, 'modify_xuean')">📎 修改学案</button>
+          <button class="ai-quick-btn" onclick="setAIMode(this, 'design_courseware')">🖥️ 设计课件</button>
+          <button class="ai-quick-btn" onclick="setAIMode(this, 'modify_courseware')">🎨 修改课件</button>
+          <button class="ai-quick-btn" onclick="clearAIChat()">🗑️ 清空对话</button>
+        </div>
+        <div class="ai-input-area">
+          <textarea class="ai-input" id="aiInput" rows="1" placeholder="请输入课题名称，如：七年级上册《地球的运动》教学设计..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAIMessage()}"></textarea>
+          <button class="ai-send-btn" id="aiSendBtn" onclick="sendAIMessage()">发送</button>
+        </div>
+      </div>
+      <!-- Sidebar -->
+      <div class="ai-sidebar">
+        <h4>⚙️ API 设置</h4>
+        <div class="ai-settings-group">
+          <label>AI 服务商</label>
+          <select id="aiProvider" onchange="switchAIProvider()">
+            <option value="siliconflow">硅基流动 SiliconFlow</option>
+            <option value="aliyun" selected>阿里云 DashScope（默认·推荐）</option>
+            <option value="zhipu">智谱 AI · GLM（免费备用）</option>
+          </select>
+        </div>
+        <div class="ai-settings-group">
+          <label>API 密钥</label>
+          <input type="password" id="aiApiKey" value="" placeholder="sk-xxxx" onchange="saveAISettings()">
+          <a id="aiKeyHelpLink" href="https://cloud.siliconflow.cn/account/ak" target="_blank" rel="noopener" style="display:inline-block;margin-top:6px;font-size:0.72rem;color:var(--primary);font-weight:600">→ 获取密钥教程</a>
+        </div>
+        <div class="ai-settings-group">
+          <label>模型选择</label>
+          <select id="aiModel" onchange="saveAISettings()">
+            <!-- 选项由 switchAIProvider() 动态填充 -->
+          </select>
+        </div>
+        <div class="ai-status ok" id="aiStatus">✅ API 就绪</div>
+        <div style="font-size:0.75rem;color:var(--text-muted);margin-top:auto;line-height:1.6;">
+          💡 <strong>提示</strong><br>
+          · 设计教案：输入课题+年级<br>
+          · 修改教案：粘贴原文+要求<br>
+          · 评价教案：粘贴教案全文<br>
+          · 设计学案：输入课题+年级<br>
+          · 修改学案：粘贴原文+要求<br>
+          · 设计课件：输入课题+课时<br>
+          · 修改课件：粘贴课件内容+要求<br>
+          · API 密钥保存在浏览器本地<br>
+          · 阿里云 DashScope 已预设密钥（默认）<br>
+          · 智谱 GLM-4-Flash 完全免费不限额
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== AI GRADING PAGE ===== -->
+  <div id="page-grading" class="page">
+    <div class="section-head" style="margin-bottom:16px">
+      <div class="section-title">📝 AI 辅助阅卷系统</div>
+    </div>
+    <p style="color:var(--text-muted);font-size:0.84rem;margin-bottom:18px">
+      基于阿里云通义千问多模态大模型，上传学生答案截图，AI 自动对照参考答案评分。适配智学网等阅卷平台。
+    </p>
+
+    <div class="grading-layout">
+      <!-- Left Panel: Inputs -->
+      <div class="grading-panel">
+        <h4>📋 参考答案与评分标准</h4>
+        <div>
+          <div class="grading-label">请输入本题的参考答案及评分标准：</div>
+          <textarea class="grading-textarea" id="gradingRefAnswer" rows="10" placeholder="示例：&#10;1. 日本位于亚洲东部，太平洋西北部（2分）&#10;2. 日本由北海道、本州、四国、九州四个大岛及众多小岛组成（2分）&#10;3. 日本多火山地震，位于环太平洋火山地震带（2分）&#10;&#10;评分标准：按要点给分，意思对即可"></textarea>
+        </div>
+
+        <div>
+          <div class="grading-label">阿里云 API-KEY（DashScope）</div>
+          <div class="grading-api-row">
+            <input type="password" id="gradingApiKey" placeholder="sk-xxxxxxxxxxxxxxxx" onchange="saveGradingApiKey()">
+            <button class="btn btn-outline btn-sm" onclick="showApiKeyHelp()">📖 获取教程</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="grading-label">题目分值</div>
+          <input type="number" id="gradingMaxScore" value="10" min="1" max="100" style="width:100px;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:0.84rem;outline:none">
+          <span style="font-size:0.78rem;color:var(--text-muted);margin-left:6px">分</span>
+        </div>
+
+        <div class="grading-btn-group">
+          <button class="btn-grade btn-grade-start" id="btnStartGrading" onclick="startGrading()">🚀 AI阅卷</button>
+          <button class="btn-grade btn-grade-stop" id="btnStopGrading" onclick="stopGrading()">⏹️ 停止阅卷</button>
+        </div>
+
+        <div class="grading-status idle" id="gradingStatus">⏸️ 就绪 · 请添加学生答案截图</div>
+
+        <div style="margin-top:auto;font-size:0.75rem;color:var(--text-muted);line-height:1.6;background:var(--bg);padding:12px;border-radius:8px">
+          💡 <strong>使用说明</strong><br>
+          ① 截取学生答案区域（截图）<br>
+          ② 点击"添加文件"批量上传所有截图<br>
+          ③ 输入参考答案和评分标准<br>
+          ④ 点击"AI阅卷"自动逐份批改<br>
+          ⑤ 如需中断，点"停止阅卷"
+        </div>
+      </div>
+
+      <!-- Right Panel: Images + Results -->
+      <div class="grading-display">
+        <div class="grading-display-header">
+          📷 学生答案截图
+          <span class="grading-img-count" id="gradingImgCount"></span>
+        </div>
+        <div class="grading-add-bar">
+          <button class="btn-grade-add" onclick="triggerGradingUpload()">➕ 添加文件</button>
+          <button class="btn-grade-clear" onclick="clearGradingImages()" id="btnClearImages" style="display:none">🗑️ 清空</button>
+        </div>
+        <div class="grading-image-area" id="gradingImageArea"
+             ondragover="event.preventDefault();this.style.background='#d1fae5'"
+             ondragleave="this.style.background='#f0fdf4'"
+             ondrop="handleGradingDrop(event)">
+          <div class="grading-placeholder" id="gradingPlaceholder">
+            <div class="grading-placeholder-icon">📤</div>
+            <div>拖拽图片到此处，或点击「添加文件」</div>
+            <div style="font-size:0.75rem;margin-top:4px">支持 JPG / PNG / WEBP · 可一次添加多张</div>
+          </div>
+          <div class="grading-thumb-grid" id="gradingThumbGrid"></div>
+          <input type="file" id="gradingFileInput" accept="image/*" multiple style="display:none" onchange="handleGradingImage(event)">
+        </div>
+        <div class="grading-progress-wrap" id="gradingProgressWrap" style="display:none">
+          <div class="grading-progress-text" id="gradingProgressText"></div>
+          <div class="grading-progress-bar"><div class="grading-progress-fill" id="gradingProgressFill" style="width:0%"></div></div>
+        </div>
+        <div class="grading-display-header" style="background:linear-gradient(135deg,var(--primary),var(--primary-dark))">
+          📊 评分结果
+          <span class="grading-img-count" id="gradingResultCount"></span>
+        </div>
+        <div class="grading-result-area" id="gradingResultArea" style="max-height:350px">
+          <div class="grading-result-empty">等待评分...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+  <p>🌍 AI地理教学网 — AI赋能地理教学资源平台</p>
+  <p style="margin-top:4px">本站为AI地理教学网站，集成AI教学设计、AI自动阅卷与资源检索功能；链接资源的版权归原作者及原平台所有</p>
+</footer>
+
+<!-- ===== RESOURCE MODAL ===== -->
+<div class="modal-overlay" id="resModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <h3 id="modalTitle" style="font-size:1.1rem;font-weight:800;margin-bottom:4px"></h3>
+        <div id="modalMeta" style="font-size:0.82rem;color:var(--text-muted)"></div>
+      </div>
+      <button class="modal-close" onclick="closeResModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer" id="modalFooter"></div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+// ============================================================
+// DATA: Platforms (修复版 - 所有链接都指向有效的搜索页面)
+// ============================================================
+const platforms = [
+  {
+    name: '国家中小学智慧教育平台',
+    icon: '🏫',
+    color: '#2563eb',
+    badge: '官方免费',
+    badgeClass: 'badge-official',
+    desc: '教育部官方平台，提供全国各版本地理教材配套的教学设计、课件、视频资源，完全免费。',
+    links: [
+      { text: '智慧教育平台', url: 'https://basic.smartedu.cn/' },
+      { text: '初中地理', url: 'https://basic.smartedu.cn/' },
+      { text: '课程资源', url: 'https://basic.smartedu.cn/' },
+    ]
+  },
+  {
+    name: '百度文库',
+    icon: '📕',
+    color: '#2563eb',
+    badge: 'VIP',
+    badgeClass: 'badge-vip',
+    desc: '海量教学设计和PPT课件，搜索"地理教学设计"即可找到大量资源，部分需VIP下载。',
+    links: [
+      { text: '地理教学设计', url: 'https://wenku.baidu.com/search?word=地理教学设计' },
+      { text: '地理PPT课件', url: 'https://wenku.baidu.com/search?word=初中地理PPT课件' },
+      { text: '高中地理教案', url: 'https://wenku.baidu.com/search?word=高中地理教案' },
+    ]
+  },
+  {
+    name: '学科网',
+    icon: '📚',
+    color: '#059669',
+    badge: '专业',
+    badgeClass: 'badge-free',
+    desc: '专注K12教育资源，地理教学设计和课件质量较高，分类清晰，教师必备平台。',
+    links: [
+      { text: '学科网首页', url: 'https://www.zxxk.com/' },
+      { text: '初中地理', url: 'https://www.zxxk.com/soft/search.aspx?keyword=初中地理教学设计' },
+      { text: '高中地理', url: 'https://www.zxxk.com/soft/search.aspx?keyword=高中地理教学设计' },
+    ]
+  },
+  {
+    name: '国家教育资源公共服务平台',
+    icon: '🏛️',
+    color: '#dc2626',
+    badge: '官方免费',
+    badgeClass: 'badge-official',
+    desc: '国家级教育资源平台，汇聚全国教师优质教学设计，支持按学科、年级筛选。',
+    links: [
+      { text: '平台首页', url: 'https://www.eduyun.cn/' },
+      { text: '资源服务', url: 'https://www.eduyun.cn/' },
+      { text: '教师研修', url: 'https://www.eduyun.cn/' },
+    ]
+  },
+  {
+    name: '21世纪教育网',
+    icon: '📖',
+    color: '#e11d48',
+    badge: '精品',
+    badgeClass: 'badge-vip',
+    desc: '教师原创资源分享平台，地理教学设计质量高，更新快。',
+    links: [
+      { text: '地理教学设计', url: 'https://www.21cnjy.com/search.php?keyword=地理教学设计' },
+      { text: '地理PPT', url: 'https://www.21cnjy.com/search.php?keyword=地理PPT课件' },
+    ]
+  },
+  {
+    name: '人教版官网',
+    icon: '📘',
+    color: '#059669',
+    badge: '官方',
+    badgeClass: 'badge-official',
+    desc: '人教版地理教材官方资源，含配套教师用书、教学设计建议和电子教材。',
+    links: [
+      { text: '人教官网', url: 'https://www.pep.com.cn/' },
+      { text: '地理教材', url: 'https://www.pep.com.cn/' },
+    ]
+  },
+  {
+    name: '地理学科网',
+    icon: '🌏',
+    color: '#0d9488',
+    badge: '专业',
+    badgeClass: 'badge-free',
+    desc: '专注于地理学科的资源平台，覆盖高中地理各模块教学设计、试题和课件。',
+    links: [
+      { text: '学科网首页', url: 'https://www.zxxk.com/' },
+      { text: '初中地理', url: 'https://www.zxxk.com/soft/search.aspx?keyword=初中地理' },
+      { text: '高中地理', url: 'https://www.zxxk.com/soft/search.aspx?keyword=高中地理' },
+    ]
+  },
+  {
+    name: '中国知网 (CNKI)',
+    icon: '🏛️',
+    color: '#7c3aed',
+    badge: '学术',
+    badgeClass: 'badge-vip',
+    desc: '学术文献数据库，可搜索地理教学研究论文、教学设计案例，适合深入研究。',
+    links: [
+      { text: '地理教学研究', url: 'https://www.cnki.net/' },
+      { text: '期刊搜索', url: 'https://kns.cnki.net/kns8/defaultresult/index?classid=Y512511&kw=地理教学' },
+    ]
+  },
+  {
+    name: '优酷/腾讯视频',
+    icon: '🎬',
+    color: '#e11d48',
+    badge: '视频',
+    badgeClass: 'badge-free',
+    desc: '搜索"地理教学视频"可找到大量课堂实录、微课和地理纪录片，辅助教学。',
+    links: [
+      { text: '地理教学视频', url: 'https://www.youku.com/search_video/q_地理教学' },
+      { text: '地理微课', url: 'https://v.qq.com/x/search/?q=地理微课' },
+    ]
+  },
+  // ===== 学术期刊论文资源 =====
+  {
+    name: '《地理教学》期刊',
+    icon: '📰',
+    color: '#059669',
+    badge: '北大核心',
+    badgeClass: 'badge-official',
+    desc: '华东师范大学主办的权威地理教学期刊，北大核心期刊，发表地理教学研究成果和案例。',
+    links: [
+      { text: '期刊官网', url: 'https://dljx.ecnu.edu.cn/CN/home' },
+      { text: '最新目录', url: 'https://dljx.cbpt.cnki.net/WKD/WebPublication/wkTextContent.aspx?colType=4&tp=gklb&mid=dljx' },
+      { text: '在线阅读', url: 'https://dljx.cbpt.cnki.net/' },
+    ]
+  },
+  {
+    name: '《中学地理教学参考》',
+    icon: '📋',
+    color: '#2563eb',
+    badge: '北大核心',
+    badgeClass: 'badge-official',
+    desc: '陕西师范大学主办的中学地理教学权威期刊，北大核心期刊，旬刊，适合教师职称评审发表。',
+    links: [
+      { text: '期刊主页', url: 'https://c.wanfangdata.com.cn/magazine/zxdljxck/' },
+      { text: '维普入口', url: 'https://cqvip.com/journal/20209/20209/2001' },
+      { text: '万方入口', url: 'https://edu.wanfangdata.com.cn/Magazine/Detail/zxdljxck' },
+    ]
+  },
+  {
+    name: '《地理学报》',
+    icon: '🔬',
+    color: '#7c3aed',
+    badge: '权威期刊',
+    badgeClass: 'badge-official',
+    desc: '中国科学院地理科学与资源研究所主办的权威学术期刊，地理学顶级期刊，适合理论研究参考。',
+    links: [
+      { text: '期刊官网', url: 'https://www.dlyj.ac.cn/CN/0375-5444/home.shtml' },
+      { text: '当期目录', url: 'https://www.dlyj.ac.cn/CN/0375-5444/current.shtml' },
+      { text: '论文检索', url: 'https://www.cnki.net/' },
+    ]
+  },
+  {
+    name: '《地理研究》',
+    icon: '📊',
+    color: '#0d9488',
+    badge: '核心期刊',
+    badgeClass: 'badge-official',
+    desc: '中国科学院地理科学与资源研究所主办，地理学核心期刊，涵盖自然地理、人文地理等研究。',
+    links: [
+      { text: '期刊官网', url: 'https://www.dlyj.ac.cn/CN/1000-0585/home.shtml' },
+      { text: '最新论文', url: 'https://www.dlyj.ac.cn/' },
+      { text: '过刊浏览', url: 'https://www.dlyj.ac.cn/CN/1000-0585/issue.shtml' },
+    ]
+  },
+  {
+    name: '维普期刊',
+    icon: '📚',
+    color: '#2563eb',
+    badge: '学术',
+    badgeClass: 'badge-vip',
+    desc: '中文科技期刊数据库，收录大量地理教学类期刊文章，支持期刊导航和论文检索。',
+    links: [
+      { text: '期刊主页', url: 'https://cqvip.com/' },
+      { text: '地理期刊', url: 'https://cqvip.com/journal/20209/' },
+      { text: '论文搜索', url: 'https://qikan.cqvip.com/' },
+    ]
+  },
+  {
+    name: '万方数据',
+    icon: '📑',
+    color: '#e11d48',
+    badge: '学术',
+    badgeClass: 'badge-vip',
+    desc: '万方数据知识服务平台，收录学位论文、会议论文、期刊论文等，含中小学数字图书馆。',
+    links: [
+      { text: '万方首页', url: 'https://www.wanfangdata.com.cn/' },
+      { text: '中小学图书馆', url: 'https://edu.wanfangdata.com.cn/' },
+      { text: '地理期刊', url: 'https://c.wanfangdata.com.cn/magazine/zxdljxck/' },
+    ]
+  },
+  {
+    name: '掌桥科研',
+    icon: '🔍',
+    color: '#f59e0b',
+    badge: '学术',
+    badgeClass: 'badge-free',
+    desc: '一站式科研服务平台，提供期刊论文、会议论文、专利等学术资源检索和下载服务。',
+    links: [
+      { text: '首页', url: 'https://www.zhangqiaokeyan.com/' },
+      { text: '地理教学期刊', url: 'https://www.zhangqiaokeyan.com/journal-cn-4887/' },
+      { text: '论文检索', url: 'https://www.zhangqiaokeyan.com/ac_search.html' },
+    ]
+  },
+  // ===== 更多地理学术期刊 =====
+  {
+    name: '《地理科学》',
+    icon: '🌍',
+    color: '#0284c7',
+    badge: '核心期刊',
+    badgeClass: 'badge-official',
+    desc: '中国科学院东北地理与农业生态研究所主办，综合性地理学核心期刊，覆盖自然地理与人文地理。',
+    links: [
+      { text: '期刊官网', url: 'http://geoscience.cbpt.cnki.net/' },
+      { text: '知网入口', url: 'https://www.cnki.net/' },
+      { text: '维普入口', url: 'https://www.cqvip.com/' },
+    ]
+  },
+  {
+    name: '《经济地理》',
+    icon: '💰',
+    color: '#059669',
+    badge: '核心期刊',
+    badgeClass: 'badge-official',
+    desc: '中国地理学会经济地理专业委员会主办，经济地理与区域发展研究权威期刊。',
+    links: [
+      { text: '期刊官网', url: 'https://jjdl.cbpt.cnki.net/' },
+      { text: '当期目录', url: 'https://jjdl.cbpt.cnki.net/' },
+      { text: '知网入口', url: 'https://www.cnki.net/' },
+    ]
+  },
+  {
+    name: '《人文地理》',
+    icon: '🏙️',
+    color: '#7c3aed',
+    badge: '核心期刊',
+    badgeClass: 'badge-official',
+    desc: '中国地理学会人文地理专业委员会主办，人文地理学核心期刊，研究人口、城市、文化地理。',
+    links: [
+      { text: '期刊官网', url: 'https://rwdl.cbpt.cnki.net/' },
+      { text: '知网检索', url: 'https://www.cnki.net/' },
+      { text: '万方入口', url: 'https://www.wanfangdata.com.cn/' },
+    ]
+  },
+  {
+    name: '《干旱区地理》',
+    icon: '🏜️',
+    color: '#dc2626',
+    badge: '核心期刊',
+    badgeClass: 'badge-official',
+    desc: '中国科学院新疆生态与地理研究所主办，干旱区地理研究权威期刊。',
+    links: [
+      { text: '知网入口', url: 'https://www.cnki.net/' },
+      { text: '维普入口', url: 'https://www.cqvip.com/' },
+      { text: '万方入口', url: 'https://www.wanfangdata.com.cn/' },
+    ]
+  },
+  {
+    name: '《山地学报》',
+    icon: '⛰️',
+    color: '#0d9488',
+    badge: '核心期刊',
+    badgeClass: 'badge-official',
+    desc: '中国科学院成都山地灾害与环境研究所主办，山地科学与环境研究核心期刊。',
+    links: [
+      { text: '知网入口', url: 'https://www.cnki.net/' },
+      { text: '维普入口', url: 'https://www.cqvip.com/' },
+      { text: '万方入口', url: 'https://www.wanfangdata.com.cn/' },
+    ]
+  },
+  {
+    name: '《海洋科学》',
+    icon: '🌊',
+    color: '#0284c7',
+    badge: '核心期刊',
+    badgeClass: 'badge-official',
+    desc: '中国科学院海洋研究所主办，海洋科学综合研究期刊，含海洋地理、海洋环境等内容。',
+    links: [
+      { text: '知网入口', url: 'https://www.cnki.net/' },
+      { text: '维普入口', url: 'https://www.cqvip.com/' },
+      { text: '万方入口', url: 'https://www.wanfangdata.com.cn/' },
+    ]
+  },
+  {
+    name: '《资源科学》',
+    icon: '💎',
+    color: '#f59e0b',
+    badge: '核心期刊',
+    badgeClass: 'badge-official',
+    desc: '中国科学院地理科学与资源研究所主办，自然资源与可持续发展研究权威期刊。',
+    links: [
+      { text: '知网入口', url: 'https://www.cnki.net/' },
+      { text: '维普入口', url: 'https://www.cqvip.com/' },
+      { text: '万方入口', url: 'https://www.wanfangdata.com.cn/' },
+    ]
+  },
+  // ===== 教材版本资源 =====
+  {
+    name: '中图版地理教材',
+    icon: '📗',
+    color: '#2563eb',
+    badge: '官方',
+    badgeClass: 'badge-official',
+    desc: '中国地图出版社地理教材官方网站，提供电子教材、教学参考和配套资源下载。',
+    links: [
+      { text: '教材官网', url: 'https://www.ditu.cn/' },
+      { text: '电子教材', url: 'http://www.dzkbw.com/books/ztb/dili/' },
+      { text: '教学资源', url: 'https://www.zxxk.com/' },
+    ]
+  },
+  {
+    name: '湘教版地理教材',
+    icon: '📘',
+    color: '#dc2626',
+    badge: '官方',
+    badgeClass: 'badge-official',
+    desc: '湖南教育出版社地理教材官方网站，提供教材配套资源和教师培训资料。',
+    links: [
+      { text: '教材官网', url: 'https://www.hneph.com/' },
+      { text: '电子教材', url: 'http://www.dzkbw.com/books/xjb/dili/' },
+      { text: '资源下载', url: 'https://www.zxxk.com/' },
+    ]
+  },
+  {
+    name: '鲁教版地理教材',
+    icon: '📙',
+    color: '#059669',
+    badge: '官方',
+    badgeClass: 'badge-official',
+    desc: '山东教育出版社地理教材官方网站，提供教材配套资源和教学设计参考。',
+    links: [
+      { text: '教材官网', url: 'https://www.sjs.com.cn/' },
+      { text: '电子教材', url: 'https://sjs.com.cn/Teach/TeachBook/List.aspx' },
+      { text: '资源平台', url: 'https://www.zxxk.com/' },
+    ]
+  },
+  {
+    name: '粤教版地理教材',
+    icon: '📕',
+    color: '#f59e0b',
+    badge: '官方',
+    badgeClass: 'badge-official',
+    desc: '广东教育出版社地理教材官方网站，提供岭南特色地理教学资源。',
+    links: [
+      { text: '教材官网', url: 'https://www.gdtextbook.com/' },
+      { text: '电子教材', url: 'http://www.dzkbw.com/books/yjb/dili/' },
+      { text: '教研资源', url: 'https://www.21cnjy.com/' },
+    ]
+  },
+];
+
+// ============================================================
+// DATA: Resources (curated)
+// ============================================================
+const resources = [
+  // 七年级
+  { id: 'r1', title: '七年级地理《地球和地图》教学设计（人教版）', type: 'plan', subject: '七年级', category: '七年级上', source: '学科网', tags: ['地球','地图','七年级'], keywords: '地球和地图 教学设计 人教版', desc: '涵盖地球形状、经纬网、地球运动、等高线地形图等核心内容的教学设计。', hot: true },
+  { id: 'r2', title: '七年级《大洲与大洋》PPT课件（含动画）', type: 'ppt', subject: '七年级', category: '七年级上', source: '百度文库', tags: ['大洲大洋','七年级'], keywords: '大洲大洋 PPT课件 人教版', desc: '精美PPT课件，含世界地图动画演示，七大洲四大洋分布一目了然。', hot: true },
+  { id: 'r3', title: '七年级《天气与气候》教学设计+课件', type: 'plan', subject: '七年级', category: '七年级上', source: '21世纪教育网', tags: ['天气','气候','七年级'], keywords: '天气与气候 教学设计 课件', desc: '包含天气符号识别、气温与降水分布规律等教学设计及配套课件。' },
+  { id: 'r4', title: '七年级《日本》完整教学设计（含情境导入）', type: 'plan', subject: '七年级', category: '七年级下', source: '学科网', tags: ['日本','七年级'], keywords: '日本 地理教学设计 情境导入', desc: '以日本2011大地震为情境导入，探究日本位置、地形、经济特色。', hot: true },
+  { id: 'r5', title: '七年级《东南亚》PPT课件', type: 'ppt', subject: '七年级', category: '七年级下', source: '百度文库', tags: ['东南亚','七年级'], keywords: '东南亚 地理PPT课件', desc: '含东南亚位置、气候、物产、旅游等知识点的精美课件。' },
+  { id: 'r6', title: '七年级《印度》教学设计', type: 'plan', subject: '七年级', category: '七年级下', source: '学科网', tags: ['印度','七年级'], keywords: '印度 地理教学设计', desc: '从位置、地形、气候、人口、经济等方面全面分析印度。' },
+  { id: 'r7', title: '七年级《俄罗斯》PPT课件（含视频素材）', type: 'ppt', subject: '七年级', category: '七年级下', source: '百度文库', tags: ['俄罗斯','七年级'], keywords: '俄罗斯 地理PPT课件', desc: '含俄罗斯自然资源、工业分布、交通等内容的完整课件。' },
+  { id: 'r8', title: '七年级《等高线地形图》微课+教学设计', type: 'video', subject: '七年级', category: '七年级上', source: '优酷', tags: ['等高线','地形图','七年级'], keywords: '等高线地形图 微课 教学设计', desc: '包含等高线地形图判读技巧的微课视频和配套教学设计。', hot: true },
+
+  // 八年级
+  { id: 'r9', title: '八年级《中国的疆域》教学设计（人教版）', type: 'plan', subject: '八年级', category: '八年级上', source: '学科网', tags: ['中国疆域','八年级'], keywords: '中国疆域 教学设计 人教版', desc: '从位置、面积、行政区划、人口民族等方面展开教学设计。', hot: true },
+  { id: 'r10', title: '八年级《中国的气候》PPT课件', type: 'ppt', subject: '八年级', category: '八年级上', source: '百度文库', tags: ['中国气候','八年级'], keywords: '中国气候 PPT课件', desc: '含气温分布规律、降水分布规律、温度带和干湿地区划分。' },
+  { id: 'r11', title: '八年级《中国的河流》教学设计+课件', type: 'plan', subject: '八年级', category: '八年级上', source: '21世纪教育网', tags: ['河流','八年级'], keywords: '中国河流 教学设计 课件', desc: '以外流河和内流河为主线，分析长江、黄河的水文特征。' },
+  { id: 'r12', title: '八年级《中国的自然资源》PPT课件', type: 'ppt', subject: '八年级', category: '八年级上', source: '百度文库', tags: ['自然资源','八年级'], keywords: '中国自然资源 PPT课件', desc: '含土地资源、水资源、矿产资源等内容的完整课件。' },
+  { id: 'r13', title: '八年级《四大地理区域》教学设计', type: 'plan', subject: '八年级', category: '八年级下', source: '学科网', tags: ['四大区域','八年级'], keywords: '四大地理区域 教学设计', desc: '北方地区、南方地区、西北地区、青藏地区的自然与人文特征对比。' },
+  { id: 'r14', title: '八年级《长江的开发与治理》教学视频', type: 'video', subject: '八年级', category: '八年级上', source: '国家智慧教育平台', tags: ['长江','八年级'], keywords: '长江 开发治理 教学视频', desc: '课堂实录视频，含长江流域图、三峡工程等教学素材。' },
+
+  // 高中
+  { id: 'r15', title: '高一《地球的宇宙环境》教学设计', type: 'plan', subject: '高一', category: '必修一', source: '学科网', tags: ['宇宙','地球','高一'], keywords: '地球宇宙环境 教学设计 必修一', desc: '从天体系统到太阳系，构建完整的宇宙认知框架。' },
+  { id: 'r16', title: '高一《大气运动》PPT课件（含动画）', type: 'ppt', subject: '高一', category: '必修一', source: '百度文库', tags: ['大气','气候','高一'], keywords: '大气运动 PPT课件 必修一', desc: '含热力环流、三圈环流、季风环流等大气运动动画演示。', hot: true },
+  { id: 'r17', title: '高一《水循环与水资源》教学设计', type: 'plan', subject: '高一', category: '必修一', source: '21世纪教育网', tags: ['水循环','水资源','高一'], keywords: '水循环 水资源 教学设计', desc: '水循环过程、洋流运动规律及其对地理环境的影响。' },
+  { id: 'r18', title: '高二《人口分布与迁移》教学设计', type: 'plan', subject: '高二', category: '必修二', source: '学科网', tags: ['人口','高二'], keywords: '人口分布迁移 教学设计 必修二', desc: '影响人口分布的因素、人口迁移的动力机制及其影响分析。' },
+  { id: 'r19', title: '高二《产业转移》PPT课件', type: 'ppt', subject: '高二', category: '必修二', source: '百度文库', tags: ['产业转移','高二'], keywords: '产业转移 PPT课件 必修二', desc: '以中国制造业转移为案例，分析产业转移的规律与影响。' },
+  { id: 'r20', title: '高二《区域可持续发展》教学设计', type: 'plan', subject: '高二', category: '必修二', source: '学科网', tags: ['区域','可持续发展','高二'], keywords: '区域可持续发展 教学设计', desc: '资源型地区、农业地区、工业地区的可持续发展案例分析。' },
+
+  // 世界地理
+  { id: 'r21', title: '《世界地理》总复习教学设计', type: 'plan', subject: '高三', category: '世界地理', source: '学科网', tags: ['世界地理','复习'], keywords: '世界地理 总复习 教学设计', desc: '按大洲系统复习世界地理核心知识点，构建知识网络。' },
+  { id: 'r22', title: '《世界气候类型》PPT课件（含分布图）', type: 'ppt', subject: '通用', category: '专题', source: '百度文库', tags: ['气候类型','世界地理'], keywords: '世界气候类型 PPT课件', desc: '含世界气候分布图动画，逐项分析12种气候类型的成因与特征。', hot: true },
+  { id: 'r23', title: '《地理信息技术》教学设计（新教材）', type: 'plan', subject: '高一', category: '专题', source: '21世纪教育网', tags: ['GIS','遥感','GPS'], keywords: '地理信息技术 教学设计', desc: '3S技术的原理与应用案例教学设计，含实际操作体验环节。' },
+
+  // 教学视频
+  { id: 'r24', title: '地理微课：板块构造学说', type: 'video', subject: '七年级', category: '专题', source: '腾讯视频', tags: ['板块构造','微课'], keywords: '板块构造学说 地理微课', desc: '3分钟微课讲解六大板块分布与运动，配合动画效果清晰直观。' },
+  { id: 'r25', title: '《航拍中国》地理教学素材合集', type: 'video', subject: '通用', category: '专题', source: '优酷', tags: ['航拍中国','视频素材'], keywords: '航拍中国 地理教学素材', desc: '精选航拍中国各集片段，适合课堂导入和情境创设使用。' },
+];
+
+// ============================================================
+// DATA: Search Engines (夸克为默认)
+// ============================================================
+const engines = {
+  quark: (q) => `https://quark.sm.cn/s?q=${encodeURIComponent(q + ' 地理 教学设计 课件 PPT')}`,
+  baidu: (q) => `https://www.baidu.com/s?wd=${encodeURIComponent(q + ' 地理 教学设计 课件 PPT')}`,
+  shenma: (q) => `https://quark.sm.cn/s?q=${encodeURIComponent(q + ' 地理教学设计 课件')}`,
+  bing: (q) => `https://cn.bing.com/search?q=${encodeURIComponent(q + ' 地理教学设计 PPT')}`,
+  sogou: (q) => `https://www.sogou.com/web?query=${encodeURIComponent(q + ' 地理教学设计 课件')}`,
+  so: (q) => `https://www.so.com/s?q=${encodeURIComponent(q + ' 地理教学设计 课件')}`,
+  toutiao: (q) => `https://so.toutiao.com/search?keyword=${encodeURIComponent(q + ' 地理教学设计')}`,
+  weixin: (q) => `https://weixin.sogou.com/weixin?type=2&query=${encodeURIComponent(q + ' 地理教学')}`,
+  douyin: (q) => `https://www.douyin.com/search/${encodeURIComponent(q + ' 地理教学')}`,
+  bilibili: (q) => `https://search.bilibili.com/all?keyword=${encodeURIComponent(q + ' 地理教学')}`,
+  doubao: (q) => `https://www.doubao.com/chat/`,
+  qianwen: (q) => `https://www.qianwen.com/qianwen?q=${encodeURIComponent(q + ' 地理教学设计')}`,
+};
+
+let currentEngine = 'quark';
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  const tabs = { home: 0, search: 1, platforms: 2, browse: 3, upload: 4, resources: 5, ai: 6, grading: 7 };
+  document.querySelectorAll('.nav-tab')[tabs[name]].classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ============================================================
+// SEARCH
+// ============================================================
+function heroSearch() {
+  const q = document.getElementById('heroSearchInput').value.trim();
+  if (!q) return;
+  document.getElementById('searchInput').value = q;
+  showPage('search');
+  doSearch();
+}
+
+function quickSearch(q) {
+  document.getElementById('heroSearchInput').value = q;
+  heroSearch();
+}
+
+function selectEngine(el) {
+  document.querySelectorAll('.engine-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  currentEngine = el.dataset.engine;
+  // 如果已有搜索关键词，立即执行搜索
+  const q = document.getElementById('searchInput').value.trim();
+  if (q) {
+    const url = engines[currentEngine](q);
+    window.open(url, '_blank');
+  }
+}
+
+function doSearch() {
+  const q = document.getElementById('searchInput').value.trim();
+  if (!q) { showToast('请输入搜索关键词'); return; }
+
+  const url = engines[currentEngine](q);
+  const engineNames = { quark:'夸克', baidu:'百度', shenma:'神马', bing:'必应', sogou:'搜狗', so:'360', toutiao:'头条', weixin:'微信', douyin:'抖音', bilibili:'B站', doubao:'豆包AI', qianwen:'通义千问' };
+
+  // Build platform links only
+  const resultsDiv = document.getElementById('searchResults');
+  resultsDiv.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div style="font-weight:700;font-size:0.95rem">🔍 正在使用 <span style="color:var(--primary)">${engineNames[currentEngine]}</span> 搜索：<span style="color:var(--primary)">${esc(q)}</span></div>
+    </div>
+    <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:16px">
+      💡 <b>搜索技巧：</b>添加 filetype:ppt 可精确搜索PPT文件 | 添加 filetype:doc 可搜索Word文档 | 添加 filetype:pdf 搜索PDF
+    </div>
+    <div style="margin-top:12px">
+      <div style="font-weight:700;font-size:0.92rem;margin-bottom:10px">📚 教学资源平台（点击直达）：</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px">
+        <a class="fallback-link" href="https://wenku.baidu.com/search?word=${encodeURIComponent(q)}" target="_blank" rel="noopener">📕 百度文库</a>
+        <a class="fallback-link" href="https://www.zxxk.com/soft/search.aspx?keyword=${encodeURIComponent(q)}" target="_blank" rel="noopener">📚 学科网</a>
+        <a class="fallback-link" href="https://www.21cnjy.com/search.php?keyword=${encodeURIComponent(q)}" target="_blank" rel="noopener">📖 21世纪教育网</a>
+        <a class="fallback-link" href="https://basic.smartedu.cn/search?q=${encodeURIComponent(q)}" target="_blank" rel="noopener">🏫 智慧教育平台</a>
+        <a class="fallback-link" href="https://www.eduyun.cn/" target="_blank" rel="noopener">🏛️ 国家资源平台</a>
+        <a class="fallback-link" href="https://www.youku.com/search_video/q_${encodeURIComponent(q)}" target="_blank" rel="noopener">🎬 优酷视频</a>
+        <a class="fallback-link" href="https://v.qq.com/x/search/?q=${encodeURIComponent(q)}" target="_blank" rel="noopener">🎬 腾讯视频</a>
+        <a class="fallback-link" href="https://kns.cnki.net/kns8/defaultresult/index?classid=Y512511&kw=${encodeURIComponent(q)}" target="_blank" rel="noopener">🏛️ 中国知网</a>
+        <a class="fallback-link" href="https://www.cqvip.com/qikan/search" target="_blank" rel="noopener">📚 维普期刊</a>
+        <a class="fallback-link" href="https://www.wanfangdata.com.cn/index.html" target="_blank" rel="noopener">📑 万方数据</a>
+        <a class="fallback-link" href="https://www.zhangqiaokeyan.com/ac_search.html" target="_blank" rel="noopener">🔍 掌桥科研</a>
+        <a class="fallback-link" href="https://dljx.ecnu.edu.cn/CN/home" target="_blank" rel="noopener">📰 地理教学期刊</a>
+      </div>
+    </div>
+  `;
+
+  window.open(url, '_blank');
+}
+
+// ============================================================
+// RENDER PLATFORMS (修复版 - 所有链接直接跳转)
+// ============================================================
+function renderPlatforms(container, list) {
+  container.innerHTML = list.map(p => `
+    <div class="platform-card">
+      <span class="platform-badge ${p.badgeClass}">${p.badge}</span>
+      <div class="platform-card-head">
+        <div class="platform-logo" style="background:${p.color}">${p.icon}</div>
+        <div class="platform-name">${p.name}</div>
+      </div>
+      <div class="platform-desc">${p.desc}</div>
+      <div class="platform-links">
+        ${p.links.map(l => `<a class="platform-link" href="${l.url}" target="_blank" rel="noopener noreferrer">${l.text}</a>`).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// BROWSE / CATEGORY
+// ============================================================
+const categories = [
+  { name: '全部', icon: '🌐' },
+  { name: '七年级上', icon: '📗' },
+  { name: '七年级下', icon: '📘' },
+  { name: '八年级上', icon: '📙' },
+  { name: '八年级下', icon: '📕' },
+  { name: '必修一', icon: '📗' },
+  { name: '必修二', icon: '📘' },
+  { name: '世界地理', icon: '🌏' },
+  { name: '专题', icon: '📌' },
+];
+
+let currentCategory = '全部';
+
+function renderCategories() {
+  document.getElementById('categoryTabs').innerHTML = categories.map(c => `
+    <button class="cat-tab ${c.name === currentCategory ? 'active' : ''}" onclick="filterCategory('${c.name}')">${c.icon} ${c.name}</button>
+  `).join('');
+  renderBrowseResources();
+}
+
+function filterCategory(cat) {
+  currentCategory = cat;
+  renderCategories();
+}
+
+function renderBrowseResources() {
+  const filtered = currentCategory === '全部'
+    ? resources
+    : resources.filter(r => r.category === currentCategory);
+
+  const grid = document.getElementById('resourceGrid');
+  if (!filtered.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-muted)">
+      <div style="font-size:2.5rem;margin-bottom:8px">📭</div>
+      <div>该分类暂无精选资源，请使用搜索功能查找更多</div>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(r => {
+    const typeMap = { ppt: ['PPT课件', 'type-ppt'], doc: ['Word文档', 'type-doc'], video: ['视频资源', 'type-video'], plan: ['教学设计', 'type-plan'] };
+    const [typeName, typeClass] = typeMap[r.type] || ['资源', 'type-plan'];
+    return `
+      <div class="resource-card" onclick="openResource('${r.id}')">
+        <div class="resource-thumb" style="background:linear-gradient(135deg,${getTypeGradient(r.type)})">
+          <span style="position:absolute;top:10px;left:10px" class="resource-type-badge ${typeClass}">${typeName}</span>
+          ${r.hot ? '<span style="position:absolute;top:10px;right:10px;font-size:0.72rem;background:#fef3c7;color:#92400e;padding:3px 8px;border-radius:6px;font-weight:700">🔥 热门</span>' : ''}
+          <span>${getTypeIcon(r.type)}</span>
+        </div>
+        <div class="resource-info">
+          <div class="resource-title">${esc(r.title)}</div>
+          <div class="resource-meta">
+            <span>📂 ${r.category}</span>
+            <span>🏷 ${r.tags.join(', ')}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span class="resource-source">来源：${r.source}</span>
+            <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openResource('${r.id}')">查看详情</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function getTypeGradient(type) {
+  const m = { ppt: '#fecaca,#fca5a5', doc: '#bfdbfe,#93c5fd', video: '#ddd6fe,#c4b5fd', plan: '#a7f3d0,#6ee7b7' };
+  return m[type] || m.plan;
+}
+function getTypeIcon(type) {
+  const m = { ppt: '📊', doc: '📝', video: '🎬', plan: '📋' };
+  return m[type] || '📄';
+}
+
+// ============================================================
+// RESOURCE DETAIL MODAL (修复版 - 链接直接跳转)
+// ============================================================
+function openResource(id) {
+  const r = resources.find(x => x.id === id);
+  if (!r) return;
+  const typeMap = { ppt: 'PPT课件', doc: 'Word文档', video: '视频资源', plan: '教学设计' };
+
+  document.getElementById('modalTitle').textContent = r.title;
+  document.getElementById('modalMeta').innerHTML = `📂 ${r.category} | 🏷 ${r.tags.join('、')} | 来源：${r.source}`;
+
+  document.getElementById('modalBody').innerHTML = `
+    <div style="margin-bottom:20px">
+      <div style="font-size:0.88rem;font-weight:700;color:var(--primary);margin-bottom:6px">📝 资源简介</div>
+      <div style="font-size:0.88rem;color:var(--text-muted);line-height:1.7">${esc(r.desc)}</div>
+    </div>
+    <div style="margin-bottom:20px">
+      <div style="font-size:0.88rem;font-weight:700;color:var(--primary);margin-bottom:6px">🏷 关键词</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">${r.keywords.split(/\s+/).map(k => `<span style="padding:3px 10px;background:var(--bg);border-radius:6px;font-size:0.78rem;color:var(--text-muted)">${esc(k)}</span>`).join('')}</div>
+    </div>
+    <div>
+      <div style="font-size:0.88rem;font-weight:700;color:var(--primary);margin-bottom:10px">🔗 在以下平台搜索此资源（点击直接跳转）：</div>
+      <div class="fallback-links" style="justify-content:flex-start">
+        <a class="fallback-link" href="https://www.baidu.com/s?wd=${encodeURIComponent(r.title)}" target="_blank" rel="noopener noreferrer">🔍 百度搜索</a>
+        <a class="fallback-link" href="https://www.google.com/search?q=${encodeURIComponent(r.title)}" target="_blank" rel="noopener noreferrer">🔍 Google</a>
+        <a class="fallback-link" href="https://wenku.baidu.com/search?word=${encodeURIComponent(r.keywords)}" target="_blank" rel="noopener noreferrer">📕 百度文库</a>
+        <a class="fallback-link" href="https://www.zxxk.com/soft/search.aspx?keyword=${encodeURIComponent(r.keywords)}" target="_blank" rel="noopener noreferrer">📚 学科网</a>
+        <a class="fallback-link" href="https://www.21cnjy.com/search.php?keyword=${encodeURIComponent(r.keywords)}" target="_blank" rel="noopener noreferrer">📖 21世纪教育网</a>
+        <a class="fallback-link" href="https://www.youku.com/search_video/q_${encodeURIComponent(r.keywords)}" target="_blank" rel="noopener noreferrer">🎬 优酷</a>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('modalFooter').innerHTML = `
+    <button class="btn btn-outline" onclick="closeResModal()">关闭</button>
+    <button class="btn btn-primary" onclick="window.open('https://www.baidu.com/s?wd=${encodeURIComponent(r.title)}','_blank')">🔍 百度搜索</button>
+    <button class="btn btn-green" onclick="window.open('https://wenku.baidu.com/search?word=${encodeURIComponent(r.keywords)}','_blank')">📕 文库搜索</button>
+  `;
+
+  document.getElementById('resModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeResModal() {
+  document.getElementById('resModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function showToast(msg) {
+  const wrap = document.getElementById('toastWrap');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  wrap.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+// close modal on overlay click
+document.getElementById('resModal').addEventListener('click', function(e) {
+  if (e.target === this) closeResModal();
+});
+
+// ============================================================
+// FILE UPLOAD (IndexedDB Storage)
+// ============================================================
+const DB_NAME = 'GeoResourcesDB';
+const DB_VERSION = 1;
+const STORE_NAME = 'files';
+let db = null;
+
+function initDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => { db = request.result; resolve(db); };
+    request.onupgradeneeded = (e) => {
+      const database = e.target.result;
+      if (!database.objectStoreNames.contains(STORE_NAME)) {
+        database.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+      }
+    };
+  });
+}
+
+async function saveFile(file) {
+  await initDB();
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const tx = db.transaction(STORE_NAME, 'readwrite');
+      const store = tx.objectStore(STORE_NAME);
+      const fileData = {
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        data: reader.result,
+        date: new Date().toISOString()
+      };
+      const req = store.add(fileData);
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function getAllFiles() {
+  await initDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readonly');
+    const store = tx.objectStore(STORE_NAME);
+    const req = store.getAll();
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function deleteFile(id) {
+  await initDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
+    const req = store.delete(id);
+    req.onsuccess = () => resolve();
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function getFileIcon(type, name) {
+  if (!type && name) {
+    if (/\.(doc|docx)$/i.test(name)) return '📝';
+    if (/\.(xls|xlsx)$/i.test(name)) return '📊';
+    if (/\.(ppt|pptx)$/i.test(name)) return '📽️';
+    if (/\.(pdf)$/i.test(name)) return '📄';
+    if (/\.(jpg|jpeg|png|gif|webp)$/i.test(name)) return '🖼️';
+    if (/\.(mp4|avi|mov)$/i.test(name)) return '🎬';
+    if (/\.(mp3|wav)$/i.test(name)) return '🎵';
+    if (/\.(zip|rar|7z)$/i.test(name)) return '📦';
+  }
+  if (type && type.startsWith('image/')) return '🖼️';
+  if (type && type.startsWith('video/')) return '🎬';
+  if (type && type.startsWith('audio/')) return '🎵';
+  if (type && type.includes('pdf')) return '📄';
+  if (type && (type.includes('word') || type.includes('document'))) return '📝';
+  if (type && (type.includes('sheet') || type.includes('excel'))) return '📊';
+  if (type && (type.includes('presentation') || type.includes('powerpoint'))) return '📽️';
+  return '📎';
+}
+
+function formatSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+  return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+}
+
+function formatDate(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString('zh-CN') + ' ' + d.toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit'});
+}
+
+async function renderFileList() {
+  const list = await getAllFiles();
+  const container = document.getElementById('fileList');
+  
+  if (!list.length) {
+    container.innerHTML = `
+      <div class="file-empty">
+        <div class="file-empty-icon">📂</div>
+        <div>暂无上传文件</div>
+        <div style="font-size:0.78rem;margin-top:8px">点击上方区域上传文件</div>
+      </div>
+    `;
+    return;
+  }
+
+  // Sort by date descending
+  list.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  container.innerHTML = list.map(f => `
+    <div class="file-item">
+      <div class="file-icon">${getFileIcon(f.type, f.name)}</div>
+      <div class="file-info">
+        <div class="file-name" title="${esc(f.name)}">${esc(f.name)}</div>
+        <div class="file-meta">${formatSize(f.size)} · ${formatDate(f.date)}</div>
+      </div>
+      <div class="file-actions">
+        <button class="btn btn-primary btn-sm" onclick="downloadFile(${f.id})">⬇️ 下载</button>
+        <button class="btn btn-outline btn-sm" onclick="removeFile(${f.id})">🗑️ 删除</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function downloadFile(id) {
+  getAllFiles().then(files => {
+    const f = files.find(x => x.id === id);
+    if (!f) return;
+    const a = document.createElement('a');
+    a.href = f.data;
+    a.download = f.name;
+    a.click();
+    showToast('开始下载：' + f.name);
+  });
+}
+
+function removeFile(id) {
+  if (!confirm('确定要删除这个文件吗？')) return;
+  deleteFile(id).then(() => {
+    showToast('文件已删除');
+    renderFileList();
+  });
+}
+
+async function exportAllFiles() {
+  const files = await getAllFiles();
+  if (!files.length) {
+    showToast('没有文件可导出');
+    return;
+  }
+  showToast(`正在导出 ${files.length} 个文件...`);
+  
+  files.forEach((f, i) => {
+    setTimeout(() => {
+      const a = document.createElement('a');
+      a.href = f.data;
+      a.download = f.name;
+      a.click();
+    }, i * 500);
+  });
+}
+
+function initUpload() {
+  const zone = document.getElementById('uploadZone');
+  const input = document.getElementById('fileInput');
+
+  zone.addEventListener('click', () => input.click());
+  
+  zone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    zone.classList.add('dragover');
+  });
+  
+  zone.addEventListener('dragleave', () => {
+    zone.classList.remove('dragover');
+  });
+  
+  zone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    zone.classList.remove('dragover');
+    handleFiles(e.dataTransfer.files);
+  });
+
+  input.addEventListener('change', () => {
+    handleFiles(input.files);
+    input.value = '';
+  });
+
+  renderFileList();
+}
+
+async function handleFiles(files) {
+  if (!files.length) return;
+  let count = 0;
+  for (const file of files) {
+    if (file.size > 50 * 1024 * 1024) {
+      showToast(`文件过大：${file.name}（最大50MB）`);
+      continue;
+    }
+    await saveFile(file);
+    count++;
+  }
+  if (count > 0) {
+    showToast(`已上传 ${count} 个文件`);
+    renderFileList();
+  }
+}
+
+// ============================================================
+// AI GRADING SYSTEM (Multi-image batch mode)
+// ============================================================
+let gradingImages = []; // Array of { name, dataUrl }
+let gradingAbortController = null;
+
+// Load saved API key
+function loadGradingApiKey() {
+  try {
+    const key = localStorage.getItem('geo_grading_api_key');
+    if (key) document.getElementById('gradingApiKey').value = key;
+  } catch(e) {}
+}
+
+function saveGradingApiKey() {
+  try {
+    localStorage.setItem('geo_grading_api_key', document.getElementById('gradingApiKey').value.trim());
+  } catch(e) {}
+}
+
+function showApiKeyHelp() {
+  const steps = [
+    '① 浏览器打开 aliyun.com → 注册/登录',
+    '② 鼠标移至"大模型"→ 点击"通义千问-Max"',
+    '③ 右上角"查看我的API-KEY"',
+    '④ 点击"创建API-KEY"获取密钥',
+    '⑤ 粘贴到左侧 API-KEY 输入框',
+    '💡 新用户有免费额度，阅卷消耗 Token'
+  ];
+  document.getElementById('gradingResultArea').innerHTML = `
+    <h4 style="color:#0ea5e9">📖 阿里云 API-KEY 获取教程</h4>
+    ${steps.map(s => `<div style="margin:4px 0">${s}</div>`).join('')}
+    <a href="https://www.aliyun.com/" target="_blank" rel="noopener" style="display:inline-block;margin-top:10px;color:var(--primary);font-weight:600">🔗 前往阿里云官网 →</a>
+  `;
+}
+
+function triggerGradingUpload() {
+  document.getElementById('gradingFileInput').click();
+}
+
+// Render thumbnail grid
+function renderGradingThumbs() {
+  const grid = document.getElementById('gradingThumbGrid');
+  const placeholder = document.getElementById('gradingPlaceholder');
+  const clearBtn = document.getElementById('btnClearImages');
+  const countEl = document.getElementById('gradingImgCount');
+  const imgArea = document.getElementById('gradingImageArea');
+  
+  const n = gradingImages.length;
+  countEl.textContent = n > 0 ? `(${n}张)` : '';
+  clearBtn.style.display = n > 0 ? '' : 'none';
+  
+  if (n === 0) {
+    placeholder.style.display = '';
+    grid.innerHTML = '';
+    imgArea.style.alignItems = 'center';
+    imgArea.style.justifyContent = 'center';
+    return;
+  }
+  
+  placeholder.style.display = 'none';
+  imgArea.style.alignItems = 'flex-start';
+  imgArea.style.justifyContent = 'flex-start';
+  
+  grid.innerHTML = gradingImages.map((img, i) => `
+    <div class="grading-thumb-item" title="${img.name}">
+      <button class="grading-thumb-remove" onclick="removeGradingImage(${i});event.stopPropagation()" title="移除">✕</button>
+      <img src="${img.dataUrl}" alt="${img.name}">
+    </div>
+  `).join('');
+}
+
+// Handle file input (multiple)
+function handleGradingImage(e) {
+  const files = Array.from(e.target.files || []);
+  if (files.length === 0) return;
+  
+  let loaded = 0;
+  const total = files.length;
+  
+  files.forEach(file => {
+    if (!file.type.startsWith('image/')) {
+      loaded++; return;
+    }
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      gradingImages.push({ name: file.name, dataUrl: ev.target.result });
+      loaded++;
+      if (loaded >= total) {
+        renderGradingThumbs();
+        updateGradingStatus('idle', `✅ 已添加 ${gradingImages.length} 张图片 · 确认后点击AI阅卷`);
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+  
+  // Reset input for re-upload
+  e.target.value = '';
+}
+
+// Handle drag-drop
+function handleGradingDrop(e) {
+  e.preventDefault();
+  document.getElementById('gradingImageArea').style.background = '#f0fdf4';
+  
+  const files = Array.from(e.dataTransfer.files || []);
+  if (files.length === 0) return;
+  
+  let loaded = 0;
+  const total = files.length;
+  
+  files.forEach(file => {
+    if (!file.type.startsWith('image/')) {
+      loaded++; return;
+    }
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      gradingImages.push({ name: file.name, dataUrl: ev.target.result });
+      loaded++;
+      if (loaded >= total) {
+        renderGradingThumbs();
+        updateGradingStatus('idle', `✅ 已添加 ${gradingImages.length} 张图片 · 确认后点击AI阅卷`);
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function removeGradingImage(index) {
+  gradingImages.splice(index, 1);
+  renderGradingThumbs();
+  updateGradingStatus('idle', gradingImages.length > 0 ? `✅ 共 ${gradingImages.length} 张图片 · 确认后点击AI阅卷` : '⏸️ 就绪 · 请添加学生答案截图');
+}
+
+function clearGradingImages() {
+  gradingImages = [];
+  renderGradingThumbs();
+  updateGradingStatus('idle', '⏸️ 就绪 · 请添加学生答案截图');
+  document.getElementById('gradingResultArea').innerHTML = '<div class="grading-result-empty">等待评分...</div>';
+  document.getElementById('gradingResultCount').textContent = '';
+  document.getElementById('gradingProgressWrap').style.display = 'none';
+}
+
+function updateGradingStatus(type, msg) {
+  const el = document.getElementById('gradingStatus');
+  el.textContent = (type === 'idle' ? '⏸️ ' : type === 'working' ? '⏳ ' : type === 'done' ? '✅ ' : '❌ ') + msg;
+  el.className = 'grading-status ' + type;
+}
+
+// Convert dataUrl to resized base64
+async function imageToBase64(dataUrl) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      const maxDim = 2048;
+      let w = img.naturalWidth, h = img.naturalHeight;
+      if (Math.max(w, h) > maxDim) {
+        const ratio = maxDim / Math.max(w, h);
+        w = Math.round(w * ratio);
+        h = Math.round(h * ratio);
+      }
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      resolve(canvas.toDataURL('image/jpeg', 0.8).split(',')[1]);
+    };
+    img.src = dataUrl;
+  });
+}
+
+// Main grading: process all images in sequence
+async function startGrading() {
+  const refAnswer = document.getElementById('gradingRefAnswer').value.trim();
+  const apiKey = document.getElementById('gradingApiKey').value.trim();
+  const maxScore = parseInt(document.getElementById('gradingMaxScore').value) || 10;
+
+  if (gradingImages.length === 0) {
+    showToast('请先添加学生答案截图');
+    return;
+  }
+  if (!refAnswer) {
+    showToast('请输入参考答案和评分标准');
+    return;
+  }
+  if (!apiKey) {
+    showToast('请输入阿里云 API-KEY');
+    return;
+  }
+  if (!apiKey.startsWith('sk-')) {
+    showToast('API-KEY 格式不正确，应以 sk- 开头');
+    return;
+  }
+
+  const total = gradingImages.length;
+  
+  updateGradingStatus('working', `AI 正在阅卷中（共 ${total} 份）...`);
+  document.getElementById('btnStartGrading').disabled = true;
+  document.getElementById('gradingResultArea').innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted)">⏳ 正在逐份批改中...</div>';
+  document.getElementById('gradingResultCount').textContent = '';
+  
+  // Show progress bar
+  document.getElementById('gradingProgressWrap').style.display = 'block';
+  document.getElementById('gradingProgressFill').style.width = '0%';
+  document.getElementById('gradingProgressText').textContent = `准备批改 0/${total}...`;
+
+  gradingAbortController = new AbortController();
+  const results = [];
+
+  for (let i = 0; i < total; i++) {
+    if (gradingAbortController.signal.aborted) break;
+    
+    const img = gradingImages[i];
+    document.getElementById('gradingProgressText').textContent = `正在批改第 ${i + 1}/${total} 份：${img.name}`;
+    document.getElementById('gradingProgressFill').style.width = ((i / total) * 100) + '%';
+    
+    try {
+      const base64Image = await imageToBase64(img.dataUrl);
+      
+      const prompt = `你是一位地理阅卷老师。请根据以下参考答案和评分标准，对学生的答案截图进行评分。
+
+【参考答案及评分标准】
+${refAnswer}
+
+【题目满分】${maxScore}分
+
+请仔细阅读截图中的学生答案，逐项对照评分标准，给出分数和详细评语。
+
+请严格按以下JSON格式输出（不要输出其他内容）：
+{
+  "score": 数字分数,
+  "maxScore": ${maxScore},
+  "summary": "简评（20字以内）",
+  "details": "详细评语（优缺点）"
+}`;
+
+      const response = await fetch('https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + apiKey
+        },
+        body: JSON.stringify({
+          model: 'qwen-vl-max',
+          messages: [
+            {
+              role: 'user',
+              content: [
+                { type: 'image_url', image_url: { url: 'data:image/jpeg;base64,' + base64Image } },
+                { type: 'text', text: prompt }
+              ]
+            }
+          ],
+          temperature: 0.3,
+          max_tokens: 1024
+        }),
+        signal: gradingAbortController.signal
+      });
+
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        throw new Error(err.message || `API 错误 ${response.status}`);
+      }
+
+      const data = await response.json();
+      const reply = data.choices[0].message.content;
+      
+      // Try to parse JSON from reply
+      let parsed;
+      try {
+        const jsonMatch = reply.match(/```(?:json)?\s*([\s\S]*?)\s*```/) || [null, reply];
+        const jsonStr = jsonMatch[1].replace(/^[\s\S]*?\{/, '{').replace(/\}[\s\S]*$/, '}');
+        parsed = JSON.parse(jsonStr);
+      } catch {
+        const scoreMatch = reply.match(/score["\s:]+(\d+)/i) || reply.match(/分数["\s:：]+(\d+)/) || reply.match(/(\d+)\s*[\/分]/);
+        parsed = { score: scoreMatch ? parseInt(scoreMatch[1]) : 0, maxScore, summary: '详见下方', details: reply };
+      }
+      
+      results.push({
+        name: img.name,
+        score: parsed.score || 0,
+        maxScore: parsed.maxScore || maxScore,
+        summary: parsed.summary || '',
+        success: true
+      });
+      
+    } catch (err) {
+      if (err.name === 'AbortError') {
+        results.push({ name: img.name, score: 0, success: false, error: '已跳过（用户停止）' });
+      } else {
+        results.push({ name: img.name, score: 0, success: false, error: err.message });
+      }
+    }
+    
+    // Update progress
+    document.getElementById('gradingProgressFill').style.width = (((i + 1) / total) * 100) + '%';
+  }
+
+  // Handle abort
+  if (gradingAbortController.signal.aborted) {
+    renderGradingResults(results, total, maxScore);
+    document.getElementById('gradingProgressText').textContent = '阅卷已停止';
+    document.getElementById('gradingProgressFill').style.width = '100%';
+    updateGradingStatus('idle', `阅卷已停止 · 已完成 ${results.length}/${total} 份`);
+    document.getElementById('btnStartGrading').disabled = false;
+    gradingAbortController = null;
+    return;
+  }
+
+  // All done
+  renderGradingResults(results, total, maxScore);
+  document.getElementById('gradingProgressText').textContent = '✅ 全部批改完成';
+  document.getElementById('gradingProgressFill').style.width = '100%';
+  
+  const doneCount = results.filter(r => r.success).length;
+  updateGradingStatus('done', `阅卷完成 · 共 ${total} 份，成功 ${doneCount} 份`);
+  document.getElementById('gradingResultCount').textContent = `(共${total}份)`;
+  
+  document.getElementById('btnStartGrading').disabled = false;
+  gradingAbortController = null;
+}
+
+function renderGradingResults(results, total, maxScore) {
+  const doneCount = results.filter(r => r.success).length;
+  const successResults = results.filter(r => r.success);
+  const avgScore = successResults.length > 0 ? (successResults.reduce((s, r) => s + r.score, 0) / successResults.length).toFixed(1) : 0;
+  
+  let html = '';
+  
+  // Summary bar
+  html += `<div class="grading-summary-bar">
+    <span>📊 共 ${total} 份</span>
+    <span>✅ 成功 ${doneCount} 份</span>
+    <span>📈 均分 ${avgScore}/${maxScore}</span>
+    ${total - doneCount > 0 ? `<span style="color:#dc2626">❌ 失败 ${total - doneCount} 份</span>` : ''}
+  </div>`;
+  
+  // Per-image results
+  results.forEach((r, i) => {
+    if (r.success) {
+      const pct = Math.round(r.score / r.maxScore * 100);
+      const color = pct >= 80 ? 'var(--primary)' : pct >= 60 ? '#f59e0b' : '#dc2626';
+      html += `<div class="grading-result-item">
+        <div class="result-header">
+          <span style="font-weight:600">📝 第${i + 1}份：${r.name}</span>
+          <span class="result-score" style="color:${color}">${r.score}/${r.maxScore}</span>
+        </div>
+        <div class="result-summary">${r.summary}</div>
+      </div>`;
+    } else {
+      html += `<div class="grading-result-item">
+        <div class="result-header">
+          <span style="font-weight:600">📝 第${i + 1}份：${r.name}</span>
+          <span class="result-score" style="color:#dc2626;font-size:0.9rem">批改失败</span>
+        </div>
+        <div class="result-summary" style="color:#dc2626">${r.error}</div>
+      </div>`;
+    }
+  });
+  
+  document.getElementById('gradingResultArea').innerHTML = html || '<div class="grading-result-empty">无评分结果</div>';
+}
+
+function stopGrading() {
+  if (gradingAbortController) {
+    gradingAbortController.abort();
+    gradingAbortController = null;
+  }
+  document.getElementById('btnStartGrading').disabled = false;
+  updateGradingStatus('idle', '阅卷已停止 · 可修改后重新阅卷');
+}
+
+// Init grading page
+(function initGrading() {
+  loadGradingApiKey();
+  renderGradingThumbs();
+})();
+
+// ============================================================
+// INIT
+// ============================================================
+// ============================================================
+// RESOURCES DATA & RENDERING
+// ============================================================
+const resourceData = {
+  qishang: { grade: '七年级上册', base: 'qishang', chapters: [
+    { title: '第一章 地球和地图', lessons: [
+      { name: '第一节 地球和地球仪', id: 837 },
+      { name: '第二节 地球的运动', id: 838 },
+      { name: '第三节 地图的阅读', id: 839 },
+      { name: '第四节 地形图的判读', id: 840 }
+    ]},
+    { title: '第二章 陆地和海洋', lessons: [
+      { name: '第一节 大洲和大洋', id: 841 },
+      { name: '第二节 海陆的变迁', id: 842 }
+    ]},
+    { title: '第三章 天气与气候', lessons: [
+      { name: '第一节 多变的天气', id: 843 },
+      { name: '第二节 气温的变化与分布', id: 844 },
+      { name: '第三节 降水的变化与分布', id: 845 },
+      { name: '第四节 世界的气候', id: 846 }
+    ]},
+    { title: '第四章 居民与聚落', lessons: [
+      { name: '第一节 人口与人种', id: 847 },
+      { name: '第二节 世界的语言和宗教', id: 848 },
+      { name: '第三节 人类的居住地——聚落', id: 849 }
+    ]},
+    { title: '第五章 发展与合作', lessons: [
+      { name: '发展与合作', id: 850 }
+    ]}
+  ]},
+  qixia: { grade: '七年级下册', base: 'qixia', chapters: [
+    { title: '第六章 我们生活的大洲——亚洲', lessons: [
+      { name: '第一节 位置和范围', id: 850 },
+      { name: '第二节 自然环境', id: 851 }
+    ]},
+    { title: '第七章 我们邻近的地区和国家', lessons: [
+      { name: '第一节 日本', id: 852 },
+      { name: '第二节 东南亚', id: 853 },
+      { name: '第三节 印度', id: 854 },
+      { name: '第四节 俄罗斯', id: 855 }
+    ]},
+    { title: '第八章 东半球其他的地区和国家', lessons: [
+      { name: '第一节 中东', id: 856 },
+      { name: '第二节 欧洲西部', id: 857 },
+      { name: '第三节 撒哈拉以南非洲', id: 858 },
+      { name: '第四节 澳大利亚', id: 859 }
+    ]},
+    { title: '第九章 西半球的国家', lessons: [
+      { name: '第一节 美国', id: 860 },
+      { name: '第二节 巴西', id: 861 }
+    ]},
+    { title: '第十章 极地地区', lessons: [
+      { name: '极地地区', id: 862 }
+    ]}
+  ]},
+  bashang: { grade: '八年级上册', base: 'bashang', chapters: [
+    { title: '第一章 从世界看中国', lessons: [
+      { name: '第一节 疆域', id: 862 },
+      { name: '第二节 人口', id: 863 },
+      { name: '第三节 民族', id: 864 }
+    ]},
+    { title: '第二章 中国的自然环境', lessons: [
+      { name: '第一节 地形和地势', id: 865 },
+      { name: '第二节 气候', id: 866 },
+      { name: '第三节 河流', id: 867 },
+      { name: '第四节 自然灾害', id: 868 }
+    ]},
+    { title: '第三章 中国的自然资源', lessons: [
+      { name: '第一节 自然资源的基本特征', id: 869 },
+      { name: '第二节 土地资源', id: 870 },
+      { name: '第三节 水资源', id: 871 }
+    ]},
+    { title: '第四章 中国的经济发展', lessons: [
+      { name: '第一节 交通运输', id: 872 },
+      { name: '第二节 农业', id: 873 },
+      { name: '第三节 工业', id: 874 }
+    ]}
+  ]},
+  baxia: { grade: '八年级下册', base: 'baxia', chapters: [
+    { title: '第五章 中国的地理差异', lessons: [
+      { name: '中国的地理差异', id: 875 }
+    ]},
+    { title: '第六章 北方地区', lessons: [
+      { name: '第一节 自然特征与农业', id: 876 },
+      { name: '第二节 "白山黑水"——东北三省', id: 877 },
+      { name: '第三节 世界最大的黄土堆积区——黄土高原', id: 878 },
+      { name: '第四节 祖国的首都——北京', id: 879 }
+    ]},
+    { title: '第七章 南方地区', lessons: [
+      { name: '第一节 自然特征与农业', id: 880 },
+      { name: '第二节 "鱼米之乡"——长江三角洲地区', id: 881 },
+      { name: '第三节 "东方明珠"——香港和澳门', id: 882 },
+      { name: '第四节 祖国的神圣领土——台湾省', id: 883 }
+    ]},
+    { title: '第八章 西北地区', lessons: [
+      { name: '第一节 自然特征与农业', id: 884 },
+      { name: '第二节 干旱的宝地——塔里木盆地', id: 885 }
+    ]},
+    { title: '第九章 青藏地区', lessons: [
+      { name: '第一节 自然特征与农业', id: 886 },
+      { name: '第二节 高原湿地——三江源地区', id: 887 }
+    ]},
+    { title: '第十章 中国在世界中', lessons: [
+      { name: '中国在世界中', id: 888 }
+    ]}
+  ]},
+  bixiu1: { grade: '高中必修第一册', base: 'bixiu1', chapters: [
+    { title: '第一章 行星地球', lessons: [
+      { name: '第一节 宇宙中的地球', id: 3559 },
+      { name: '第二节 太阳对地球的影响', id: 3560 },
+      { name: '第三节 地球的运动', id: 3561 },
+      { name: '第四节 地球的圈层结构', id: 3562 }
+    ]},
+    { title: '第二章 地球上的大气', lessons: [
+      { name: '第一节 冷热不均引起大气运动', id: 3563 },
+      { name: '第二节 气压带和风带', id: 3564 },
+      { name: '第三节 常见天气系统', id: 3565 },
+      { name: '第四节 全球气候变化', id: 3566 }
+    ]},
+    { title: '第三章 地球上的水', lessons: [
+      { name: '第一节 自然界的水循环', id: 3567 },
+      { name: '第二节 大规模的海水运动', id: 3568 },
+      { name: '第三节 水资源的合理利用', id: 3569 }
+    ]},
+    { title: '第四章 地表形态的塑造', lessons: [
+      { name: '第一节 营造地表形态的力量', id: 3570 },
+      { name: '第二节 山地的形成', id: 3571 },
+      { name: '第三节 河流地貌的发育', id: 3572 }
+    ]},
+    { title: '第五章 自然地理环境的整体性与差异性', lessons: [
+      { name: '第一节 自然地理环境的整体性', id: 3573 },
+      { name: '第二节 自然地理环境的差异性', id: 3574 }
+    ]}
+  ]},
+  bixiu2: { grade: '高中必修第二册', base: 'bixiu2', chapters: [
+    { title: '第一章 人口的变化', lessons: [
+      { name: '第一节 人口的数量变化', id: 3575 },
+      { name: '第二节 人口的空间变化', id: 3576 },
+      { name: '第三节 人口的合理容量', id: 3577 }
+    ]},
+    { title: '第二章 城市与城市化', lessons: [
+      { name: '第一节 城市内部空间结构', id: 3578 },
+      { name: '第二节 不同等级城市的服务功能', id: 3579 },
+      { name: '第三节 城市化', id: 3580 }
+    ]},
+    { title: '第三章 农业地域的形成与发展', lessons: [
+      { name: '第一节 农业的区位选择', id: 3581 },
+      { name: '第二节 以种植业为主的农业地域类型', id: 3582 },
+      { name: '第三节 以畜牧业为主的农业地域类型', id: 3583 }
+    ]},
+    { title: '第四章 工业地域的形成与发展', lessons: [
+      { name: '第一节 工业的区位选择', id: 3584 },
+      { name: '第二节 工业地域的形成', id: 3585 },
+      { name: '第三节 传统工业区与新工业区', id: 3586 }
+    ]},
+    { title: '第五章 交通运输布局及其影响', lessons: [
+      { name: '第一节 交通运输方式和布局', id: 3587 },
+      { name: '第二节 交通运输方式和布局变化的影响', id: 3588 }
+    ]},
+    { title: '第六章 人类与地理环境的协调发展', lessons: [
+      { name: '第一节 人地关系思想的演变', id: 3589 },
+      { name: '第二节 中国的可持续发展实践', id: 3590 }
+    ]}
+  ]}
+};
+
+function renderGradeResources(grade) {
+  const data = resourceData[grade];
+  const container = document.getElementById('gradeContainers');
+  document.querySelectorAll('.grade-tab').forEach(t => t.classList.remove('active'));
+  const idx = { qishang: 0, qixia: 1, bashang: 2, baxia: 3, bixiu1: 5, bixiu2: 6 };
+  document.querySelectorAll('.grade-tab')[idx[grade]].classList.add('active');
+
+  const isHigh = grade.startsWith('bixiu');
+  const urlBase = isHigh ? 'gaozhongdili' : 'chuzhongdili';
+
+  let html = '';
+  data.chapters.forEach((ch, ci) => {
+    html += `<div class="resource-chapter">
+      <div class="chapter-header" onclick="toggleChapter(this)">
+        <span class="chapter-arrow">▶</span> ${ch.title}
+        <span style="margin-left:auto;font-size:0.75rem;color:var(--text-muted);font-weight:400">${ch.lessons.length}课</span>
+      </div>
+      <div class="chapter-body">
+        ${ch.lessons.map(ls => `
+          <div class="resource-row">
+            <div class="resource-name">${ls.name}</div>
+            <div class="resource-links">
+              <a class="res-link res-link-kj" href="https://www.renjiaoshe.com/${urlBase}/${data.base}/${ls.id}.html" target="_blank" rel="noopener">📊 课件</a>
+              <a class="res-link res-link-ja" href="https://www.renjiaoshe.com/${urlBase}/${data.base}/${ls.id}.html" target="_blank" rel="noopener">📝 教案</a>
+              <a class="res-link res-link-xa" href="https://www.renjiaoshe.com/${urlBase}/${data.base}/${ls.id}.html" target="_blank" rel="noopener">📋 学案</a>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
+  });
+
+  // 加入专题直达链接
+  if (isHigh) {
+    html += `<div style="text-align:center;margin-top:20px;padding:16px;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow)">
+      <span style="font-weight:700;color:var(--text)">🔗 ${data.grade} 资源直达：</span>
+      <a class="res-link res-link-kj" style="margin-left:8px" href="https://www.renjiaoshe.com/gaozhongdili/${data.base}/" target="_blank" rel="noopener">📊 全册课件</a>
+      <a class="res-link res-link-ja" style="margin-left:4px" href="https://www.renjiaoshe.com/gaozhongdili/${data.base}/" target="_blank" rel="noopener">📝 全册教案</a>
+      <a class="res-link res-link-xa" style="margin-left:4px" href="https://www.renjiaoshe.com/gaozhongdili/${data.base}/" target="_blank" rel="noopener">📋 全册学案</a>
+      <span style="margin-left:12px;font-size:0.78rem;color:var(--text-muted)">| 电子课本：</span>
+      <a class="res-link res-link-all" href="http://www.dzkbw.com/books/rjb/dili/" target="_blank" rel="noopener">📖 全册课本</a>
+    </div>`;
+  } else {
+    const act = grade.substring(0, 2) === 'qi' ? 7 : 8;
+    const zb = [['dl7xkj', 'dl7xja', 'dl7xxa'], ['dl8xkj', 'dl8xja', 'dl8xxa']];
+    const zi = act === 7 ? zb[0] : zb[1];
+
+    html += `<div style="text-align:center;margin-top:20px;padding:16px;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow)">
+      <span style="font-weight:700;color:var(--text)">🔗 ${data.grade} 专题合集直达：</span>
+      <a class="res-link res-link-kj" style="margin-left:8px" href="https://www.renjiaoshe.com/zt/${zi[0]}/" target="_blank" rel="noopener">📊 全册课件</a>
+      <a class="res-link res-link-ja" style="margin-left:4px" href="https://www.renjiaoshe.com/zt/${zi[1]}/" target="_blank" rel="noopener">📝 全册教案</a>
+      <a class="res-link res-link-xa" style="margin-left:4px" href="https://www.renjiaoshe.com/zt/${zi[2]}/" target="_blank" rel="noopener">📋 全册学案</a>
+      <span style="margin-left:12px;font-size:0.78rem;color:var(--text-muted)">| 电子课本：</span>
+      <a class="res-link res-link-all" href="http://www.dzkbw.com/books/rjb/dili/qnj${act === 7 ? 'x' : 's'}/" target="_blank" rel="noopener">📖 全册课本</a>
+    </div>`;
+  }
+
+  container.innerHTML = html;
+}
+
+function showGrade(grade) {
+  renderGradeResources(grade);
+}
+
+function toggleChapter(el) {
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+// ============================================================
+// AI ASSISTANT
+// ============================================================
+let aiMode = 'design';
+let aiConversation = [];
+
+// System prompts for each mode
+const AI_SYSTEM_PROMPTS = {
+  design: `你是一位经验丰富的初中/高中地理教学专家，教龄20年以上，擅长撰写优质教学设计（教案）。
+
+你的任务是根据教师输入的【课题+年级】，生成一份完整规范的地理教学设计。
+
+请严格按以下格式输出：
+
+## 教学设计：《课题名称》
+
+### 一、教学目标
+- **知识与技能**：
+- **过程与方法**：
+- **情感态度价值观**：
+
+### 二、教学重难点
+- **重点**：
+- **难点**：
+
+### 三、教学准备
+- 教具、多媒体资源等
+
+### 四、教学过程
+| 教学环节 | 教师活动 | 学生活动 | 设计意图 | 时间 |
+|---------|---------|---------|---------|------|
+| 导入新课 | ... | ... | ... | 3min |
+| 新课讲授 | ... | ... | ... | 25min |
+| ... | ... | ... | ... | ... |
+
+### 五、板书设计
+
+### 六、课后作业
+
+### 七、教学反思（预留）
+
+要求：
+1. 紧扣地理课程标准，体现学科核心素养
+2. 教学过程设计要有可操作性
+3. 融入地图、图表等地理学科特色
+4. 语言专业但不晦涩`,
+
+  modify: `你是一位经验丰富的初中/高中地理教学专家。教师会把一份已有的教学设计发给你，请根据教师的具体要求进行修改优化。
+
+修改原则：
+1. 保持原有教案的优秀部分
+2. 针对教师指出的问题精准修改
+3. 补充遗漏的教学环节
+4. 优化语言表达和教学逻辑
+5. 增强地理学科特色（地图、案例等）
+
+输出格式：先简要说明修改了哪些部分，然后输出修改后的完整教案。`,
+
+  evaluate: `你是一位资深地理教研员，专门负责评审地理教学设计。请对教师提交的教案进行专业评估。
+
+请按以下维度评分（每项1-10分）并给出详细评语：
+
+| 评估维度 | 评分 | 评语 |
+|---------|-----|------|
+| 目标设定 | ?/10 | ... |
+| 内容科学性 | ?/10 | ... |
+| 教学方法 | ?/10 | ... |
+| 过程设计 | ?/10 | ... |
+| 地理特色 | ?/10 | ... |
+| 可操作性 | ?/10 | ... |
+| **总分** | **?/60** | |
+
+然后给出：
+- **优点**：3-5条
+- **不足**：2-3条
+- **改进建议**：具体可行的优化方案
+
+评估要客观专业，既有批评也要有建设性意见。`,
+  
+  design_xuean: `你是一位经验丰富的初中/高中地理教学专家，教龄20年以上，擅长设计高质量的学生导学案。
+
+你的任务是根据教师输入的【课题+年级】，生成一份完整规范的学生导学案（学案）。
+
+学案与教案的区别：学案是以学生为中心的学习方案，强调学生的自主学习和探究过程，而非教师的教学过程。
+
+请严格按以下格式输出：
+
+## 导学案：《课题名称》
+
+### 一、学习目标
+- **知识与技能**：
+- **过程与方法**：
+- **情感态度价值观**：
+
+### 二、学习重难点
+- **重点**：
+- **难点**：
+
+### 三、课前预习·自主梳理
+请设计3-5个预习问题或填空，引导学生课前阅读教材：
+1. _________
+2. _________
+（提示：用填空形式呈现知识点，降低预习门槛）
+
+### 四、课中探究·合作学习
+| 探究任务 | 学习活动 | 学法指导 | 时间 |
+|---------|---------|---------|------|
+| 任务一：... | ... | ... | 5min |
+| 任务二：... | ... | ... | 8min |
+| ... | ... | ... | ... |
+
+### 五、课堂检测·当堂巩固
+设计3-5道课堂练习题（选择题+简答题），附参考答案。
+
+### 六、课后拓展·学以致用
+设计1-2个课后探究活动或实践任务。
+
+### 七、学习反思
+（留空，供学生填写）
+
+要求：
+1. 语言贴近学生认知水平，避免过于学术化
+2. 预习部分要有明确的操作指引
+3. 探究任务要有层次性（基础→提升→拓展）
+4. 融入地理图表、地图等学科元素
+5. 体现"先学后教、以学定教"理念`,
+
+  modify_xuean: `你是一位经验丰富的初中/高中地理教学专家。教师会把一份已有的学案发给你，请根据教师的具体要求进行修改优化。
+
+修改原则：
+1. 保持原有学案的优秀部分
+2. 针对教师指出的问题精准修改
+3. 补充遗漏的学习环节
+4. 优化语言使其更适合学生阅读
+5. 增强探究性和可操作性
+6. 加入地图、图表等地理学科元素
+
+输出格式：先简要说明修改了哪些部分，然后输出修改后的完整学案。`,
+
+  design_courseware: `你是一位经验丰富的初中/高中地理教学专家，同时也是PPT课件设计高手。你的任务是根据教师输入的【课题+年级+课时】，设计一份地理教学PPT课件的完整大纲。
+
+请按以下结构输出，每页标注PPT页码：
+
+## PPT课件大纲：《课题名称》
+**适用年级：**  | **课时：**  | **课件总页数：** 约__页
+
+---
+
+### 第1页：封面页
+- 标题、副标题、适用年级、教师姓名（留空）
+- 建议配图：...
+
+### 第2页：学习目标
+- 列出3-4条学习目标
+- 用思维导图或列表形式
+
+### 第3页：导入环节（____分钟）
+- 导入方式：（情境导入/视频导入/复习导入/问题导入）
+- 具体内容：...
+- 建议素材：...
+
+### 第4-N页：新课讲授
+按知识点分页，每页包括：
+- **页面标题**：知识点名称
+- **核心内容**：要点呈现（简洁、可视化）
+- **呈现方式**：文字/图表/地图/示意图/动画
+- **建议素材**：需要准备的地图、图片、数据
+
+### 第M页：课堂小结
+- 知识框架图/思维导图
+- 核心概念回顾
+
+### 第N页：课堂练习
+- 2-3道练习题（附答案）
+- 建议呈现方式：逐题点击显示答案
+
+### 最后一页：结束页
+- 课后作业布置
+- 下节预告
+
+要求：
+1. 每页内容精炼，适合PPT呈现（每页要点不超过5条）
+2. 充分利用地理图表、地图、景观图等视觉元素
+3. 导入环节要有吸引力
+4. 新课讲授要有清晰的逻辑线索
+5. 标注每页的建议动画效果（如淡入、逐条出现等）`,
+
+  modify_courseware: `你是一位经验丰富的初中/高中地理教学专家和PPT设计顾问。教师会把已有的课件内容发给你，请根据具体要求进行修改优化。
+
+修改原则：
+1. 分析现有课件的结构和逻辑
+2. 针对教师指出的问题进行精准修改
+3. 优化页面排版和内容呈现方式
+4. 增强视觉效果和动画建议
+5. 补充遗漏的知识点或页数
+6. 优化地图、图表的呈现
+
+输出格式：
+- 先列出发现的问题（3-5条）
+- 再逐页给出修改建议
+- 最后输出修改后的完整课件大纲`
+};
+
+const AI_SYSTEM_PROMPTS_CN = {
+  design: '设计教案',
+  modify: '修改教案',
+  evaluate: '评价教案',
+  design_xuean: '设计学案',
+  modify_xuean: '修改学案',
+  design_courseware: '设计课件',
+  modify_courseware: '修改课件'
+};
+
+// ===== AI 服务商配置 =====
+const AI_PROVIDERS = {
+  aliyun: {
+    name: '阿里云 DashScope',
+    url: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions',
+    keyPrefix: 'sk-',
+    placeholder: 'sk-xxxx (阿里云 DashScope API Key)',
+    helpUrl: 'https://dashscope.aliyun.com/',
+    helpLabel: '→ 阿里云 DashScope 获取密钥',
+    defaultKey: 'sk-be3fa01bdc7f41e4944a502913344653',
+    models: [
+      { value: 'qwen-turbo', label: 'Qwen-Turbo (快速·低价)' },
+      { value: 'qwen-plus', label: 'Qwen-Plus (推荐·均衡)' },
+      { value: 'qwen-max', label: 'Qwen-Max (最强·付费)' },
+      { value: 'qwen-max-longcontext', label: 'Qwen-Max-Long (长文本)' }
+    ]
+  },
+  siliconflow: {
+    name: '硅基流动 SiliconFlow',
+    url: 'https://api.siliconflow.cn/v1/chat/completions',
+    keyPrefix: 'sk-',
+    placeholder: 'sk-xxxx (SiliconFlow API Key)',
+    helpUrl: 'https://cloud.siliconflow.cn/account/ak',
+    helpLabel: '→ 硅基流动获取密钥',
+    defaultKey: '',
+    models: [
+      { value: 'Qwen/Qwen2.5-7B-Instruct', label: 'Qwen2.5-7B (免费·推荐)' },
+      { value: 'Qwen/Qwen3-235B-A22B', label: 'Qwen3-235B (付费·更强)' },
+      { value: 'deepseek-ai/DeepSeek-V3', label: 'DeepSeek-V3 (付费)' }
+    ]
+  },
+  zhipu: {
+    name: '智谱 AI · GLM',
+    url: 'https://open.bigmodel.cn/api/paas/v4/chat/completions',
+    keyPrefix: '',
+    placeholder: 'xxxxx.yyyyy (API Key 格式：id.secret)',
+    helpUrl: 'https://open.bigmodel.cn/usercenter/apikeys',
+    helpLabel: '→ 智谱AI获取密钥（免费）',
+    defaultKey: '7af324b619574e4182e1dcf6e40ea8e1.9oNIvJWhLfv1ic7Z',
+    models: [
+      { value: 'glm-4-flash', label: 'GLM-4-Flash (免费·不限额·推荐)' },
+      { value: 'glm-4-flashx', label: 'GLM-4-FlashX (免费·速度更快)' },
+      { value: 'glm-4-air', label: 'GLM-4-Air (轻量付费)' },
+      { value: 'glm-4-airx', label: 'GLM-4-AirX (加速版·付费)' },
+      { value: 'glm-4-long', label: 'GLM-4-Long (长文本·付费)' },
+      { value: 'glm-4', label: 'GLM-4 (旗舰·付费)' }
+    ]
+  }
+};
+
+// 切换 AI 服务商
+function switchAIProvider() {
+  const providerKey = document.getElementById('aiProvider').value;
+  const provider = AI_PROVIDERS[providerKey];
+  if (!provider) return;
+
+  // 1) 保存当前 provider
+  try { localStorage.setItem('geo_ai_provider', providerKey); } catch(e) {}
+
+  // 2) 加载该 provider 之前保存的 key（没有则用默认 key，并自动保存）
+  let savedKey = '';
+  try { savedKey = localStorage.getItem('geo_ai_api_key_' + providerKey) || ''; } catch(e) {}
+  const keyInput = document.getElementById('aiApiKey');
+  if (!savedKey && provider.defaultKey) {
+    // 没有保存过 key，但有默认 key → 自动填入并保存
+    try { localStorage.setItem('geo_ai_api_key_' + providerKey, provider.defaultKey); } catch(e) {}
+    keyInput.value = provider.defaultKey;
+  } else {
+    keyInput.value = savedKey;
+  }
+  keyInput.placeholder = provider.placeholder;
+
+  // 3) 更新获取密钥链接
+  const helpLink = document.getElementById('aiKeyHelpLink');
+  if (helpLink) {
+    helpLink.href = provider.helpUrl;
+    helpLink.textContent = provider.helpLabel;
+  }
+
+  // 4) 重新填充模型选择器
+  const modelSel = document.getElementById('aiModel');
+  modelSel.innerHTML = '';
+  provider.models.forEach(m => {
+    const opt = document.createElement('option');
+    opt.value = m.value;
+    opt.textContent = m.label;
+    modelSel.appendChild(opt);
+  });
+
+  // 5) 选中之前保存的模型（若有）
+  let savedModel = '';
+  try { savedModel = localStorage.getItem('geo_ai_model_' + providerKey) || ''; } catch(e) {}
+  if (savedModel) {
+    const opt = [...modelSel.options].find(o => o.value === savedModel);
+    if (opt) modelSel.value = savedModel;
+  }
+
+  // 6) 更新状态
+  updateAIStatus();
+}
+
+function updateAIStatus() {
+  const apiKey = document.getElementById('aiApiKey').value.trim();
+  const statusEl = document.getElementById('aiStatus');
+  if (apiKey) {
+    const providerKey = document.getElementById('aiProvider').value;
+    const providerName = AI_PROVIDERS[providerKey] ? AI_PROVIDERS[providerKey].name : '';
+    statusEl.textContent = '✅ ' + providerName + ' 就绪';
+    statusEl.className = 'ai-status ok';
+  } else {
+    statusEl.textContent = '⚙️ 待配置 API 密钥';
+    statusEl.className = 'ai-status err';
+  }
+}
+
+function setAIMode(el, mode) {
+  aiMode = mode;
+  document.querySelectorAll('.ai-quick-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  const placeholders = {
+    design: '请输入课题名称，如：七年级上册《地球的运动》...',
+    modify: '请粘贴需要修改的教案，并说明修改要求...',
+    evaluate: '请粘贴需要评价的教案全文...',
+    design_xuean: '请输入课题名称，如：七年级上册《地球的运动》导学案...',
+    modify_xuean: '请粘贴需要修改的学案，并说明修改要求...',
+    design_courseware: '请输入课题名称，如：七年级上册《地球的运动》课件...',
+    modify_courseware: '请粘贴需要修改的课件内容，并说明修改要求...'
+  };
+  document.getElementById('aiInput').placeholder = placeholders[mode] || '';
+  document.getElementById('aiInput').focus();
+}
+
+async function sendAIMessage() {
+  const input = document.getElementById('aiInput');
+  const btn = document.getElementById('aiSendBtn');
+  const msg = input.value.trim();
+  if (!msg) return;
+
+  // Check API key
+  const apiKey = document.getElementById('aiApiKey').value.trim() || getStoredApiKey();
+  const providerKey = document.getElementById('aiProvider').value;
+  const provider = AI_PROVIDERS[providerKey];
+  if (!apiKey) {
+    addAIMessage('ai', '⚠️ 请先在右侧栏输入 API 密钥。免费获取：<a href="' + provider.helpUrl + '" target="_blank" style="color:#7c3aed">' + provider.helpLabel + '</a>');
+    return;
+  }
+  if (!document.getElementById('aiApiKey').value.trim()) {
+    document.getElementById('aiApiKey').value = apiKey;
+  }
+
+  // Add user message
+  addAIMessage('user', msg);
+  input.value = '';
+  input.style.height = 'auto';
+  btn.disabled = true;
+  document.getElementById('aiStatus').textContent = '⏳ AI思考中...';
+  document.getElementById('aiStatus').className = 'ai-status ok';
+
+  // Show typing indicator
+  const msgs = document.getElementById('aiMessages');
+  const typingDiv = document.createElement('div');
+  typingDiv.className = 'ai-typing';
+  typingDiv.id = 'aiTyping';
+  typingDiv.innerHTML = '<span></span><span></span><span></span>';
+  msgs.appendChild(typingDiv);
+  msgs.scrollTop = msgs.scrollHeight;
+
+  // Build messages
+  const model = document.getElementById('aiModel').value;
+  const messages = [
+    { role: 'system', content: AI_SYSTEM_PROMPTS[aiMode] },
+    ...aiConversation.slice(-6), // keep last 3 exchanges as context
+    { role: 'user', content: msg }
+  ];
+
+  try {
+    const response = await fetch(provider.url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + apiKey
+      },
+      body: JSON.stringify({
+        model: model,
+        messages: messages,
+        temperature: 0.7,
+        max_tokens: 4096,
+        stream: false
+      })
+    });
+
+    // Clean up typing
+    const t = document.getElementById('aiTyping');
+    if (t) t.remove();
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.error?.message || err.message || `HTTP ${response.status}`);
+    }
+
+    const data = await response.json();
+    const reply = data.choices[0].message.content;
+
+    aiConversation.push({ role: 'user', content: msg });
+    aiConversation.push({ role: 'assistant', content: reply });
+
+    addAIMessage('ai', reply);
+    updateAIStatus();
+  } catch (err) {
+    const t = document.getElementById('aiTyping');
+    if (t) t.remove();
+    addAIMessage('ai', '❌ 请求失败：' + err.message + '\n\n可能原因：\n1. API 密钥无效或已过期\n2. 网络连接问题\n3. 当前模型不可用，请尝试切换模型或服务商');
+    document.getElementById('aiStatus').textContent = '❌ 连接失败';
+    document.getElementById('aiStatus').className = 'ai-status err';
+  }
+
+  btn.disabled = false;
+  document.getElementById('aiInput').focus();
+}
+
+function addAIMessage(role, content) {
+  const div = document.createElement('div');
+  div.className = 'ai-msg ' + role;
+  // Simple markdown: bold, headings, tables
+  let html = content
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/### (.+)/g, '<h3>$1</h3>')
+    .replace(/## (.+)/g, '<h2>$1</h2>')
+    .replace(/# (.+)/g, '<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/\n/g, '<br>');
+  html = '<p>' + html + '</p>';
+  // Fix empty paragraphs
+  html = html.replace(/<p><\/p>/g, '<br>');
+  div.innerHTML = html;
+  document.getElementById('aiMessages').appendChild(div);
+  document.getElementById('aiMessages').scrollTop = document.getElementById('aiMessages').scrollHeight;
+}
+
+function clearAIChat() {
+  aiConversation = [];
+  document.getElementById('aiMessages').innerHTML = `
+    <div class="ai-msg ai">
+      👋 你好！我是地理教学AI助手，可以帮你：<br><br>
+      📝 <strong>设计教案</strong> — 输入课题，生成完整教学设计<br>
+      ✏️ <strong>修改教案</strong> — 粘贴已有教案，我帮你优化改进<br>
+      📊 <strong>评价教案</strong> — 对教案进行多维度专业评估<br><br>
+      请选择下方功能，或直接输入你的需求。
+    </div>
+  `;
+}
+
+function getStoredApiKey() {
+  try {
+    const providerKey = document.getElementById('aiProvider').value || 'siliconflow';
+    return localStorage.getItem('geo_ai_api_key_' + providerKey) || '';
+  } catch(e) { return ''; }
+}
+
+function saveAISettings() {
+  try {
+    const providerKey = document.getElementById('aiProvider').value;
+    localStorage.setItem('geo_ai_provider', providerKey);
+    localStorage.setItem('geo_ai_api_key_' + providerKey, document.getElementById('aiApiKey').value.trim());
+    localStorage.setItem('geo_ai_model_' + providerKey, document.getElementById('aiModel').value);
+    updateAIStatus();
+  } catch(e) {}
+}
+
+// 页面加载时根据保存的 provider 初始化整个设置区
+// 同时：将各服务商的 defaultKey 强制写入 localStorage（覆盖旧值，确保 key 始终有效）
+(function loadAISettings() {
+  try {
+    // 强制写入所有 defaultKey 到 localStorage（每次加载都更新）
+    Object.keys(AI_PROVIDERS).forEach(pk => {
+      const p = AI_PROVIDERS[pk];
+      if (p.defaultKey) {
+        try { localStorage.setItem('geo_ai_api_key_' + pk, p.defaultKey); } catch(e) {}
+      }
+    });
+
+    // 默认值是 aliyun（阿里云 DashScope，免费额度充足）
+    let providerKey = localStorage.getItem('geo_ai_provider') || 'aliyun';
+    if (!AI_PROVIDERS[providerKey]) providerKey = 'aliyun';
+
+    // 兼容旧版本：如果新 key 不存在，则把旧的 geo_ai_api_key / geo_ai_model 迁移到对应 provider 下
+    if (providerKey === 'siliconflow') {
+      const oldKey = localStorage.getItem('geo_ai_api_key');
+      const oldModel = localStorage.getItem('geo_ai_model');
+      if (oldKey && !localStorage.getItem('geo_ai_api_key_siliconflow')) {
+        localStorage.setItem('geo_ai_api_key_siliconflow', oldKey);
+      }
+      if (oldModel && !localStorage.getItem('geo_ai_model_siliconflow')) {
+        localStorage.setItem('geo_ai_model_siliconflow', oldModel);
+      }
+    }
+    // 兼容更旧版本：如果没有任何新格式 key，尝试从旧格式迁移到 aliyun
+    if (!localStorage.getItem('geo_ai_api_key_aliyun') && !localStorage.getItem('geo_ai_api_key_siliconflow')) {
+      const oldKey = localStorage.getItem('geo_ai_api_key');
+      if (oldKey) {
+        localStorage.setItem('geo_ai_api_key_' + providerKey, oldKey);
+      }
+    }
+
+    document.getElementById('aiProvider').value = providerKey;
+    switchAIProvider(); // 这会自动填充 key / 模型列表
+  } catch(e) {
+    // 出错时回退到硅基流动
+    try { switchAIProvider(); } catch(e2) {}
+  }
+})();
+
+(function init() {
+  // Render hot platforms on home (first 4)
+  renderPlatforms(document.getElementById('hotPlatforms'), platforms.slice(0, 4));
+  // Render all platforms
+  renderPlatforms(document.getElementById('allPlatforms'), platforms);
+  // Render browse
+  renderCategories();
+  // Init upload page
+  initUpload();
+  // Init resources page
+  renderGradeResources('qishang');
+})();
+</script>
+</body>
+</html>
