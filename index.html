@@ -1402,9 +1402,10 @@
         <div class="ai-settings-group">
           <label>AI 服务商</label>
           <select id="aiProvider" onchange="switchAIProvider()">
-            <option value="zhipu" selected>智谱 AI · GLM（默认·免费不限额）</option>
-            <option value="aliyun">阿里云 DashScope（备选）</option>
-            <option value="siliconflow">硅基流动 SiliconFlow</option>
+            <option value="zhipu" selected>智谱 AI · GLM（默认·永久免费）</option>
+            <option value="baidu">百度千帆 ERNIE（永久免费备选）</option>
+            <option value="siliconflow">硅基流动 SiliconFlow（永久免费备选）</option>
+            <option value="aliyun">阿里云 DashScope（需自备密钥）</option>
           </select>
         </div>
         <div class="ai-settings-group">
@@ -1429,8 +1430,10 @@
           · 设计课件：输入课题+课时<br>
           · 修改课件：粘贴课件内容+要求<br>
           · API 密钥保存在浏览器本地<br>
-          · 智谱 GLM-4-Flash 完全免费不限额（推荐）<br>
-          · AI阅卷同样支持三服务商，默认智谱AI免费
+          · 智谱 GLM-4-Flash 永久免费不限额<br>
+          · 百度千帆/硅基流动永久免费备用<br>
+          · 切换智谱非免费模型需自备密钥<br>
+          · AI阅卷默认智谱AI，同样永久免费
         </div>
       </div>
     </div>
@@ -1457,9 +1460,10 @@
         <div>
           <div class="grading-label">AI 服务商</div>
           <select id="gradingProvider" onchange="switchGradingProvider()" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:0.84rem;outline:none;background:#fff">
-            <option value="zhipu" selected>智谱 AI · GLM（默认·免费不限额）</option>
-            <option value="aliyun">阿里云 DashScope（备选）</option>
-            <option value="siliconflow">硅基流动 SiliconFlow</option>
+            <option value="zhipu" selected>智谱 AI · GLM（默认·永久免费）</option>
+            <option value="baidu">百度千帆 ERNIE（永久免费备选）</option>
+            <option value="siliconflow">硅基流动 SiliconFlow（永久免费备选）</option>
+            <option value="aliyun">阿里云 DashScope（需自备密钥）</option>
           </select>
         </div>
 
@@ -2463,16 +2467,39 @@ function switchGradingProvider() {
   // 1) 保存当前 provider
   try { localStorage.setItem('geo_grading_provider', providerKey); } catch(e) {}
 
-  // 2) 加载该 provider 之前保存的 key（没有则用默认 key）
+  // 2) 加载该 provider 之前保存的 key
   let savedKey = '';
   try { savedKey = localStorage.getItem('geo_grading_api_key_' + providerKey) || ''; } catch(e) {}
   const keyInput = document.getElementById('gradingApiKey');
-  if (!savedKey && provider.defaultKey) {
-    // 没有保存过 key，但有默认 key → 自动填入并保存
+
+  // 智谱特殊处理：仅免费模型自动填充密钥
+  if (providerKey === 'zhipu') {
+    const freeModels = ['glm-4-flash', 'glm-4-flashx'];
+    // 阅卷默认用 glm-4-flash
+    let currentModel = 'glm-4-flash';
+    
+    if (freeModels.includes(currentModel) && provider.defaultKey) {
+      if (!savedKey) {
+        try { localStorage.setItem('geo_grading_api_key_' + providerKey, provider.defaultKey); } catch(e) {}
+        savedKey = provider.defaultKey;
+      }
+      keyInput.value = savedKey;
+      keyInput.style.background = '#e8f5e9';
+      keyInput.title = '智谱免费模型，已自动填充密钥';
+    } else {
+      keyInput.value = savedKey || '';
+      keyInput.style.background = '#fff8e1';
+      keyInput.title = '需自备 API 密钥';
+    }
+  } else if (!savedKey && provider.defaultKey) {
     try { localStorage.setItem('geo_grading_api_key_' + providerKey, provider.defaultKey); } catch(e) {}
     keyInput.value = provider.defaultKey;
+    keyInput.style.background = '';
+    keyInput.title = '';
   } else {
     keyInput.value = savedKey;
+    keyInput.style.background = '';
+    keyInput.title = '';
   }
   keyInput.placeholder = provider.placeholder;
 
@@ -3488,16 +3515,47 @@ function switchAIProvider() {
   // 1) 保存当前 provider
   try { localStorage.setItem('geo_ai_provider', providerKey); } catch(e) {}
 
-  // 2) 加载该 provider 之前保存的 key（没有则用默认 key，并自动保存）
+  // 2) 加载该 provider 之前保存的 key
   let savedKey = '';
   try { savedKey = localStorage.getItem('geo_ai_api_key_' + providerKey) || ''; } catch(e) {}
   const keyInput = document.getElementById('aiApiKey');
-  if (!savedKey && provider.defaultKey) {
-    // 没有保存过 key，但有默认 key → 自动填入并保存
+  
+  // 查找当前模型（切换时已保存的模型，或默认第一个）
+  let currentModel = '';
+  try { currentModel = localStorage.getItem('geo_ai_model_' + providerKey) || ''; } catch(e) {}
+  const modelSel = document.getElementById('aiModel');
+  
+  // 智谱特殊处理：仅 GLM-4-Flash / GLM-4-FlashX 自动填充密钥
+  if (providerKey === 'zhipu') {
+    const freeModels = ['glm-4-flash', 'glm-4-flashx'];
+    // 如果当前没有保存的模型，默认用 glm-4-flash
+    if (!currentModel) currentModel = 'glm-4-flash';
+    
+    if (freeModels.includes(currentModel) && provider.defaultKey) {
+      // 免费模型：自动填充
+      if (!savedKey) {
+        try { localStorage.setItem('geo_ai_api_key_' + providerKey, provider.defaultKey); } catch(e) {}
+        savedKey = provider.defaultKey;
+      }
+      keyInput.value = savedKey;
+      keyInput.style.background = '#e8f5e9';
+      keyInput.title = 'GLM-4-Flash 免费模型，已自动填充密钥';
+    } else {
+      // 非免费模型：不自动填充，需用户自行获取
+      keyInput.value = savedKey || '';
+      keyInput.style.background = '#fff8e1';
+      keyInput.title = '此模型需自备智谱 API 密钥，切换回 GLM-4-Flash 可自动填充';
+    }
+  } else if (!savedKey && provider.defaultKey) {
+    // 有默认 key → 自动填入并保存
     try { localStorage.setItem('geo_ai_api_key_' + providerKey, provider.defaultKey); } catch(e) {}
     keyInput.value = provider.defaultKey;
+    keyInput.style.background = '';
+    keyInput.title = '';
   } else {
     keyInput.value = savedKey;
+    keyInput.style.background = '';
+    keyInput.title = '';
   }
   keyInput.placeholder = provider.placeholder;
 
@@ -3509,7 +3567,6 @@ function switchAIProvider() {
   }
 
   // 4) 重新填充模型选择器
-  const modelSel = document.getElementById('aiModel');
   modelSel.innerHTML = '';
   provider.models.forEach(m => {
     const opt = document.createElement('option');
@@ -3518,12 +3575,10 @@ function switchAIProvider() {
     modelSel.appendChild(opt);
   });
 
-  // 5) 选中之前保存的模型（若有）
-  let savedModel = '';
-  try { savedModel = localStorage.getItem('geo_ai_model_' + providerKey) || ''; } catch(e) {}
-  if (savedModel) {
-    const opt = [...modelSel.options].find(o => o.value === savedModel);
-    if (opt) modelSel.value = savedModel;
+  // 5) 选中之前保存的模型
+  if (currentModel) {
+    const opt = [...modelSel.options].find(o => o.value === currentModel);
+    if (opt) modelSel.value = currentModel;
   }
 
   // 6) 更新状态
@@ -3692,9 +3747,34 @@ function getStoredApiKey() {
 function saveAISettings() {
   try {
     const providerKey = document.getElementById('aiProvider').value;
+    const model = document.getElementById('aiModel').value;
+    const keyInput = document.getElementById('aiApiKey');
+    
     localStorage.setItem('geo_ai_provider', providerKey);
-    localStorage.setItem('geo_ai_api_key_' + providerKey, document.getElementById('aiApiKey').value.trim());
-    localStorage.setItem('geo_ai_model_' + providerKey, document.getElementById('aiModel').value);
+    localStorage.setItem('geo_ai_api_key_' + providerKey, keyInput.value.trim());
+    localStorage.setItem('geo_ai_model_' + providerKey, model);
+    
+    // 智谱特殊处理：切换模型时自动调整密钥策略
+    if (providerKey === 'zhipu') {
+      const freeModels = ['glm-4-flash', 'glm-4-flashx'];
+      if (freeModels.includes(model)) {
+        // 切换到免费模型：自动填充密钥
+        if (!keyInput.value.trim() && AI_PROVIDERS.zhipu.defaultKey) {
+          keyInput.value = AI_PROVIDERS.zhipu.defaultKey;
+          localStorage.setItem('geo_ai_api_key_zhipu', AI_PROVIDERS.zhipu.defaultKey);
+        }
+        keyInput.style.background = '#e8f5e9';
+        keyInput.title = 'GLM-4-Flash 免费模型，密钥已自动填充';
+      } else {
+        // 切换到付费模型：清空并提示自备密钥
+        keyInput.value = '';
+        localStorage.setItem('geo_ai_api_key_zhipu', '');
+        keyInput.style.background = '#fff8e1';
+        keyInput.title = '非免费模型，请自行获取智谱 API 密钥';
+        keyInput.placeholder = '切换付费模型，请自行输入 API 密钥';
+      }
+    }
+    
     updateAIStatus();
   } catch(e) {}
 }
