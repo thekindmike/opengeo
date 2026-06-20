@@ -3416,10 +3416,10 @@ const AI_PROVIDERS = {
     name: '阿里云 DashScope',
     url: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions',
     keyPrefix: 'sk-',
-    placeholder: 'sk-xxxx (阿里云 DashScope API Key)',
+    placeholder: 'sk-xxxx（需自行获取阿里云 API Key）',
     helpUrl: 'https://dashscope.aliyun.com/',
     helpLabel: '→ 阿里云 DashScope 获取密钥',
-    defaultKey: 'sk-be3fa01bdc7f41e4944a502913344653',
+    defaultKey: '',
     models: [
       { value: 'qwen-turbo', label: 'Qwen-Turbo (快速·低价)' },
       { value: 'qwen-plus', label: 'Qwen-Plus (推荐·均衡)' },
@@ -3431,12 +3431,15 @@ const AI_PROVIDERS = {
     name: '硅基流动 SiliconFlow',
     url: 'https://api.siliconflow.cn/v1/chat/completions',
     keyPrefix: 'sk-',
-    placeholder: 'sk-xxxx (SiliconFlow API Key)',
+    placeholder: 'sk-xxxx（需自行获取 SiliconFlow API Key）',
     helpUrl: 'https://cloud.siliconflow.cn/account/ak',
     helpLabel: '→ 硅基流动获取密钥',
     defaultKey: '',
     models: [
-      { value: 'Qwen/Qwen2.5-7B-Instruct', label: 'Qwen2.5-7B (免费·推荐)' },
+      { value: 'Qwen/Qwen2.5-7B-Instruct', label: 'Qwen2.5-7B (永久免费·中文强)' },
+      { value: 'Qwen/Qwen3-8B', label: 'Qwen3-8B (永久免费·推荐)' },
+      { value: 'THUDM/glm-4-9b-chat', label: 'GLM-4-9B (永久免费·长文本)' },
+      { value: 'deepseek-ai/DeepSeek-R1-Distill-Llama-8B', label: 'DeepSeek-R1-8B (永久免费·推理强)' },
       { value: 'Qwen/Qwen3-235B-A22B', label: 'Qwen3-235B (付费·更强)' },
       { value: 'deepseek-ai/DeepSeek-V3', label: 'DeepSeek-V3 (付费)' }
     ]
@@ -3445,17 +3448,33 @@ const AI_PROVIDERS = {
     name: '智谱 AI · GLM',
     url: 'https://open.bigmodel.cn/api/paas/v4/chat/completions',
     keyPrefix: '',
-    placeholder: 'xxxxx.yyyyy (API Key 格式：id.secret)',
+    placeholder: 'xxxxx.yyyyy（API Key 格式：id.secret）',
     helpUrl: 'https://open.bigmodel.cn/usercenter/apikeys',
     helpLabel: '→ 智谱AI获取密钥（免费）',
     defaultKey: '7af324b619574e4182e1dcf6e40ea8e1.9oNIvJWhLfv1ic7Z',
+    freeModel: 'glm-4-flash',
     models: [
-      { value: 'glm-4-flash', label: 'GLM-4-Flash (免费·不限额·推荐)' },
+      { value: 'glm-4-flash', label: 'GLM-4-Flash (永久免费·不限额·推荐)' },
       { value: 'glm-4-flashx', label: 'GLM-4-FlashX (免费·速度更快)' },
-      { value: 'glm-4-air', label: 'GLM-4-Air (轻量付费)' },
-      { value: 'glm-4-airx', label: 'GLM-4-AirX (加速版·付费)' },
-      { value: 'glm-4-long', label: 'GLM-4-Long (长文本·付费)' },
-      { value: 'glm-4', label: 'GLM-4 (旗舰·付费)' }
+      { value: 'glm-4-air', label: 'GLM-4-Air (轻量·需自备密钥)' },
+      { value: 'glm-4-airx', label: 'GLM-4-AirX (加速版·需自备密钥)' },
+      { value: 'glm-4-long', label: 'GLM-4-Long (长文本·需自备密钥)' },
+      { value: 'glm-4', label: 'GLM-4 (旗舰·需自备密钥)' }
+    ]
+  },
+  baidu: {
+    name: '百度千帆 ERNIE',
+    url: 'https://qianfan.baidubce.com/v2/chat/completions',
+    keyPrefix: '',
+    placeholder: 'xxxx（需自行获取百度千帆 Access Key）',
+    helpUrl: 'https://console.bce.baidu.com/qianfan/ais/console/applicationConsole/application',
+    helpLabel: '→ 百度千帆获取密钥',
+    defaultKey: '',
+    models: [
+      { value: 'ernie-speed-8k', label: 'ERNIE-Speed-8K (永久免费·不限量)' },
+      { value: 'ernie-3.5-8k', label: 'ERNIE-3.5-8K (永久免费·通用)' },
+      { value: 'ernie-lite-8k', label: 'ERNIE-Lite-8K (永久免费·轻量)' },
+      { value: 'ernie-4.0-8k', label: 'ERNIE-4.0-8K (旗舰·需自备密钥)' }
     ]
   }
 };
