@@ -2434,34 +2434,105 @@ async function handleFiles(files) {
 let gradingImages = []; // Array of { name, dataUrl }
 let gradingAbortController = null;
 
-// Load saved API key
+// Load saved API key and provider (for AI Grading)
 function loadGradingApiKey() {
   try {
-    const key = localStorage.getItem('geo_grading_api_key');
-    if (key) document.getElementById('gradingApiKey').value = key;
+    // 加载服务商选择
+    const savedProvider = localStorage.getItem('geo_grading_provider') || 'zhipu';
+    const providerSelect = document.getElementById('gradingProvider');
+    if (providerSelect) providerSelect.value = savedProvider;
+
+    // 初始化服务商配置（会自动填入默认key）
+    switchGradingProvider();
   } catch(e) {}
 }
 
 function saveGradingApiKey() {
   try {
-    localStorage.setItem('geo_grading_api_key', document.getElementById('gradingApiKey').value.trim());
+    const providerKey = document.getElementById('gradingProvider').value;
+    localStorage.setItem('geo_grading_api_key_' + providerKey, document.getElementById('gradingApiKey').value.trim());
   } catch(e) {}
 }
 
-function showApiKeyHelp() {
-  const steps = [
-    '① 浏览器打开 aliyun.com → 注册/登录',
-    '② 鼠标移至"大模型"→ 点击"通义千问-Max"',
-    '③ 右上角"查看我的API-KEY"',
-    '④ 点击"创建API-KEY"获取密钥',
-    '⑤ 粘贴到左侧 API-KEY 输入框',
-    '💡 新用户有免费额度，阅卷消耗 Token'
-  ];
+// 切换阅卷AI服务商（与AI助手共用AI_PROVIDERS配置）
+function switchGradingProvider() {
+  const providerKey = document.getElementById('gradingProvider').value;
+  const provider = AI_PROVIDERS[providerKey];
+  if (!provider) return;
+
+  // 1) 保存当前 provider
+  try { localStorage.setItem('geo_grading_provider', providerKey); } catch(e) {}
+
+  // 2) 加载该 provider 之前保存的 key（没有则用默认 key）
+  let savedKey = '';
+  try { savedKey = localStorage.getItem('geo_grading_api_key_' + providerKey) || ''; } catch(e) {}
+  const keyInput = document.getElementById('gradingApiKey');
+  if (!savedKey && provider.defaultKey) {
+    // 没有保存过 key，但有默认 key → 自动填入并保存
+    try { localStorage.setItem('geo_grading_api_key_' + providerKey, provider.defaultKey); } catch(e) {}
+    keyInput.value = provider.defaultKey;
+  } else {
+    keyInput.value = savedKey;
+  }
+  keyInput.placeholder = provider.placeholder;
+
+  // 3) 更新获取教程按钮的行为
+  const helpBtn = document.getElementById('gradingKeyHelpBtn');
+  if (helpBtn) {
+    helpBtn.onclick = showGradingApiKeyHelp;
+  }
+}
+
+function showGradingApiKeyHelp() {
+  const providerKey = document.getElementById('gradingProvider').value;
+  const provider = AI_PROVIDERS[providerKey];
+
+  let steps = [];
+  let title = '';
+  let linkUrl = '';
+  let linkText = '';
+
+  if (providerKey === 'zhipu') {
+    title = '📖 智谱 AI 密钥获取教程';
+    steps = [
+      '① 浏览器打开 open.bigmodel.cn → 注册/登录',
+      '② 点击右上角"用户中心"→ "API密钥"',
+      '③ 点击"创建API Key"生成新密钥',
+      '④ 复制密钥（格式：id.secret）粘贴到左侧',
+      '💡 GLM-4-Flash/GLM-4V-Flash 完全免费不限额！'
+    ];
+    linkUrl = 'https://open.bigmodel.cn/usercenter/apikeys';
+    linkText = '🔗 前往智谱AI获取免费密钥 →';
+  } else if (providerKey === 'aliyun') {
+    title = '📖 阿里云 DashScope 密钥获取教程';
+    steps = [
+      '① 浏览器打开 aliyun.com → 注册/登录',
+      '② 进入 阿里云百炼 控制台',
+      '③ 点击"API-KEY管理"创建密钥',
+      '④ 粘贴到左侧 API-KEY 输入框',
+      '💡 新用户有免费额度，qwen-vl-max按量计费'
+    ];
+    linkUrl = 'https://dashscope.aliyun.com/';
+    linkText = '🔗 前往阿里云百炼 →';
+  } else {
+    title = '📖 硅基流动 SiliconFlow 密钥获取教程';
+    steps = [
+      '① 浏览器打开 cloud.siliconflow.cn → 注册/登录',
+      '② 点击账户设置 → API密钥',
+      '③ 创建新的API Key',
+      '④ 粘贴到左侧输入框',
+      '💡 部分模型免费，付费模型需充值使用'
+    ];
+    linkUrl = 'https://cloud.siliconflow.cn/account/ak';
+    linkText = '🔗 前往硅基流动 →';
+  }
+
   document.getElementById('gradingResultArea').innerHTML = `
-    <h4 style="color:#0ea5e9">📖 阿里云 API-KEY 获取教程</h4>
-    ${steps.map(s => `<div style="margin:4px 0">${s}</div>`).join('')}
-    <a href="https://www.aliyun.com/" target="_blank" rel="noopener" style="display:inline-block;margin-top:10px;color:var(--primary);font-weight:600">🔗 前往阿里云官网 →</a>
+    <h4 style="color:var(--primary)">${title}</h4>
+    ${steps.map(s => `<div style="margin:4px 0;font-size:0.84rem">${s}</div>`).join('')}
+    <a href="${linkUrl}" target="_blank" rel="noopener" style="display:inline-block;margin-top:10px;color:var(--primary);font-weight:600">${linkText}</a>
   `;
+}
 }
 
 function triggerGradingUpload() {
