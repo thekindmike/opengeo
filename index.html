@@ -2615,11 +2615,14 @@ async function startGrading() {
     return;
   }
   if (!apiKey) {
-    showToast('请输入阿里云 API-KEY');
+    showToast('请输入 API 密钥（或切换到智谱AI使用免费默认密钥）');
     return;
   }
-  if (!apiKey.startsWith('sk-')) {
-    showToast('API-KEY 格式不正确，应以 sk- 开头');
+  // 获取当前选择的阅卷服务商
+  const gradingProviderKey = document.getElementById('gradingProvider').value;
+  const gradingProvider = AI_PROVIDERS[gradingProviderKey];
+  if (!gradingProvider) {
+    showToast('AI 服务商配置错误');
     return;
   }
 
