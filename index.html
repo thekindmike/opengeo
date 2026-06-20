@@ -1455,10 +1455,19 @@
         </div>
 
         <div>
-          <div class="grading-label">阿里云 API-KEY（DashScope）</div>
+          <div class="grading-label">AI 服务商</div>
+          <select id="gradingProvider" onchange="switchGradingProvider()" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:0.84rem;outline:none;background:#fff">
+            <option value="zhipu" selected>智谱 AI · GLM（默认·免费不限额）</option>
+            <option value="aliyun">阿里云 DashScope（备选）</option>
+            <option value="siliconflow">硅基流动 SiliconFlow</option>
+          </select>
+        </div>
+
+        <div>
+          <div class="grading-label">API 密钥</div>
           <div class="grading-api-row">
-            <input type="password" id="gradingApiKey" placeholder="sk-xxxxxxxxxxxxxxxx" onchange="saveGradingApiKey()">
-            <button class="btn btn-outline btn-sm" onclick="showApiKeyHelp()">📖 获取教程</button>
+            <input type="password" id="gradingApiKey" placeholder="请先选择AI服务商" onchange="saveGradingApiKey()">
+            <button class="btn btn-outline btn-sm" id="gradingKeyHelpBtn" onclick="showGradingApiKeyHelp()">📖 获取教程</button>
           </div>
         </div>
 
