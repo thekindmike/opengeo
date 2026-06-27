@@ -1,0 +1,13 @@
+{
+  "backupTime": "2026-06-20T03:01:29.083Z",
+  "files": [
+    "bookmarks_backup.json",
+    "bookmarks_watcher.js",
+    "generate_bookmarks_doc.js",
+    "index.html",
+    "parse_bookmarks.js",
+    "启动书签监控.bat"
+  ],
+  "gitCommit": "0bb921e",
+  "gitStatus": "已同步"
+}
